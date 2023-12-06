@@ -9,7 +9,10 @@ from flask_restful import Resource
 # Local imports
 from config import app, db, api
 # Add your model imports
-from models import User
+from models.user import User
+from models.user import user_connections
+from models.post import Post
+from models.comment import Comment
 
 
 # Views go here!

@@ -15,10 +15,10 @@ from sqlalchemy import insert
 # Local imports
 from config import app, db
 # from app_setup import db
-from models import User
-from models import Post
-from models import Comment
-from models import user_connections
+from models.user import User
+from models.user import user_connections
+from models.post import Post
+from models.comment import Comment
 
 
 
