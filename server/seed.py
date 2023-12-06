@@ -113,9 +113,9 @@ if __name__ == '__main__':
 
     with app.app_context():
         print("Clearing db...")
-        # User.query.delete()
-        # Post.query.delete()
-        # Comment.query.delete()
+        User.query.delete()
+        Post.query.delete()
+        Comment.query.delete()
         
         print("Creating tables...")
         db.create_all()

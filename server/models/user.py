@@ -34,14 +34,14 @@ class User(db.Model, SerializerMixin):
         'User', secondary = user_connections,
         primaryjoin=(id == user_connections.c.sender_id) & (user_connections.c.status == 'pending'),
         secondaryjoin=(id == user_connections.c.receiver_id) & (user_connections.c.status == 'pending'),
-        back_populates = 'accepted_sent_connections'
+        backref = 'pending_received_connections'
     )
 
     accepted_sent_connections = db.relationship(
         'User', secondary = user_connections,
         primaryjoin=(id == user_connections.c.sender_id) & (user_connections.c.status == 'accepted'),
         secondaryjoin=(id == user_connections.c.receiver_id) & (user_connections.c.status == 'accepted'),
-        back_populates = 'pending_sent_connections'
+        backref = 'accepted_received_connections'
     )
     
 
@@ -53,16 +53,7 @@ class User(db.Model, SerializerMixin):
     posts = association_proxy('comments', 'post')
 
     # Serialization
-    serialize_rules = (
-        '-accepted_sent_connections',
-        '-pending_sent_connections',
-        '-rejected_sent_connections',
-        '-pending_received_connections',
-        '-rejected_received_connections',
-        '-accepted_received_connections',
-        '-comments.user',
-        '-posts.user'
-    )
+    serialize_only = ('email', 'first_name', 'last_name')
 
     # Properties
     @hybrid_property
@@ -106,7 +97,4 @@ class User(db.Model, SerializerMixin):
     
 
     def __repr__(self):
-        return f'''<User {self.id},
-            First: {self.first_name}
-            Last: {self.last_name}
-            Email: {self.email} />'''
+        return (f'''<User Id: {self.id} Email: {self.email}>''')
