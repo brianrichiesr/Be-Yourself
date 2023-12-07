@@ -17,10 +17,20 @@ class Post(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     # Relationship mapping post to related user
-    comments = db.relationship('Comment', back_populates='post')
-    users = association_proxy('comments', 'user')
+    comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
+    comment_authors = association_proxy('comments', 'user')
+    post_author = db.relationship('User', back_populates='posts_authored')
+    # Serialization
+    serialize_rules = ('-users.posts_comments', '-comments.post')
 
-    serialize_rules = ('-user.posts', '-comments.post')
+    # Add validations
+    @validates('description')
+    def validate_description(self, _, description):
+        if not isinstance(description, str) :
+            raise TypeError('Description must be a String')
+        elif len(description) < 1:
+            raise ValueError('Description must be at least one letter long')
+        return description
 
     def __repr__(self):
         return f'<Post {self.id}, {self.description} />'

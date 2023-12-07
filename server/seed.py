@@ -29,8 +29,7 @@ def create_users():
     for _ in range(10):
 
         c = User(
-            first_name=fake.first_name(),
-            last_name=fake.last_name(),
+            user_name=fake.name(),
             email=fake.email(),
         )
 
@@ -87,8 +86,8 @@ def create_user_connections(users):
             receiver_id int,
             status varchar(255) DEFAULT 'pending',
             reason mediumtext,
-            FOREIGN KEY (sender_id) REFERENCES users(sender_id),
-            FOREIGN KEY (receiver_id) REFERENCES users(receiver_id)
+            FOREIGN KEY (sender_id) REFERENCES users(id),
+            FOREIGN KEY (receiver_id) REFERENCES users(id)
             );
         ''')
 
@@ -113,9 +112,9 @@ if __name__ == '__main__':
 
     with app.app_context():
         print("Clearing db...")
-        # User.query.delete()
-        # Post.query.delete()
-        # Comment.query.delete()
+        User.query.delete()
+        Post.query.delete()
+        Comment.query.delete()
         
         print("Creating tables...")
         db.create_all()

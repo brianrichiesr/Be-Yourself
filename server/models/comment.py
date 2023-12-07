@@ -20,7 +20,17 @@ class Comment(db.Model, SerializerMixin):
     user = db.relationship('User', back_populates="comments")
     post = db.relationship('Post', back_populates="comments")
 
-    serialize_rules = ('-user.comments', '-post.comments')
+    # Serialization
+    serialize_rules = ('-user.post_comments', '-post.comments')
+
+    # Add validations
+    @validates('comment')
+    def validate_comment(self, _, comment):
+        if not isinstance(comment, str) :
+            raise TypeError('Comment must be a String')
+        elif len(comment) < 1:
+            raise ValueError('Comment must be at least one letter long')
+        return comment
 
     def __repr__(self):
-        return f'<Comment {self.id}, {self.comment} />'
+        return f'<Comment {self.comment}, Id: {self.id}, Post Id: {self.post_id} />'
