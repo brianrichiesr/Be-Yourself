@@ -18,10 +18,10 @@ class Post(db.Model, SerializerMixin):
 
     # Relationship mapping post to related user
     comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
-    users = association_proxy('comments', 'user')
-
+    comment_authors = association_proxy('comments', 'user')
+    post_author = db.relationship('User', back_populates='posts_authored')
     # Serialization
-    serialize_rules = ('-users.posts', '-comments.post')
+    serialize_rules = ('-users.posts_comments', '-comments.post')
 
     # Add validations
     @validates('description')

@@ -21,7 +21,7 @@ class Comment(db.Model, SerializerMixin):
     post = db.relationship('Post', back_populates="comments")
 
     # Serialization
-    serialize_rules = ('-user.comments', '-post.comments')
+    serialize_rules = ('-user.post_comments', '-post.comments')
 
     # Add validations
     @validates('comment')
