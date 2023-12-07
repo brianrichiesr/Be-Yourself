@@ -56,7 +56,7 @@ class User(db.Model, SerializerMixin):
     posts_authored = db.relationship('Post', back_populates='post_author')
 
     # Serialization
-    serialize_rules = ('-comments', '-post_comments.post', '-posts_authored.post_author')
+    serialize_only = ('user_name', 'email', 'id')
 
     # Properties
     @hybrid_property

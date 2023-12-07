@@ -21,7 +21,7 @@ class Post(db.Model, SerializerMixin):
     comment_authors = association_proxy('comments', 'user')
     post_author = db.relationship('User', back_populates='posts_authored')
     # Serialization
-    serialize_rules = ('-users.posts_comments', '-comments.post')
+    serialize_rules = ('-users.posts_comments', '-comments.post', '-comments.post_id', '-comments.user_id')
 
     # Add validations
     @validates('description')
