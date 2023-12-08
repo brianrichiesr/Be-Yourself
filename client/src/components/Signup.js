@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 
 
 function Signup () {
+
+    const [signupError, setSignupError] = useState("")
 
     const navigate = useNavigate();
 
@@ -31,30 +33,69 @@ function Signup () {
                 }}
                 validationSchema={SignupSchema}
                 onSubmit={async (values) => {
-                    await new Promise((r) => setTimeout(r, 500));
-                    alert(JSON.stringify(values, null, 2));
-                    fetch("/")
+                    fetch("/users", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(values)
+                    })
+                    .then(res => {
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data.errors) {
+                            setSignupError(data.errors);
+                            throw (data.errors);
+                        }
+                        alert("Thank you for being you!");
+                        navigate('/main');
+                    })
+                    .catch(err => {
+                        alert(err)
+                    })
                     // navigate('/main')
                 }}
             >
-                <Form>
-                <label htmlFor="user_name">First Name</label>
-                <Field id="user_name" name="user_name" placeholder="John Blaze" />
-        
-                <label htmlFor="email">Email</label>
-                <Field
-                    id="email"
-                    name="email"
-                    placeholder="john@blaze.com"
-                    type="email"
-                />
-        
-                <label htmlFor="password">Last Name</label>
-                <Field id="password" name="password" type="password" placeholder="password" />
+                {({errors, touched}) => (
+                    <Form>
 
-                <button type="submit">Submit</button>
-                </Form>
+                        <div>
+                            <label htmlFor="user_name">User Name</label>
+                            <Field id="user_name" name="user_name" placeholder="John Blaze" autoComplete="off" />
+                            {errors.user_name && touched.user_name ? (
+                                <span> {errors.user_name}</span>
+                            ) : null}
+                        </div>
+                        
+                        <div>
+                            <label htmlFor="email">Email</label>
+                            <Field
+                                id="email"
+                                name="email"
+                                placeholder="john@blaze.com"
+                                type="email"
+                                autoComplete="off"
+                            />
+                            {errors.email && touched.email ? (
+                                <span> {errors.email}</span>
+                            ) : null}
+                        </div>
+
+                        <div>
+                            <label htmlFor="password">Password</label>
+                            <Field id="password" name="password" type="password" placeholder="password" autoComplete="off" />
+                            {errors.password && touched.password ? (
+                                <span> {errors.password}</span>
+                            ) : null}
+                        </div>
+        
+                        <button type="submit">Submit</button>
+
+                    </Form>
+                )}
             </Formik>
+            <div>{signupError}</div>
         </div>
     )
 };

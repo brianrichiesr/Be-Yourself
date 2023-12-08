@@ -40,9 +40,9 @@ def convert_sql(sq_list):
     return r_list
 
 # Function for to connect to '/' route
-@app.route('/')
-def index():
-    return '<h1>Be Yourself Server</h1>'
+# @app.route('/')
+# def index():
+#     return '<h1>Be Yourself Server Side Route</h1>'
 
 # Restful routes for 'User' model
 class Users(Resource):
@@ -75,9 +75,11 @@ class Users(Resource):
             if user:
                 # Return response object and 400 status
                 return make_response(
-                    {
-                        "errors": "Invalid Credentials"
-                    }, 400
+                    jsonify(
+                        {
+                            "errors": "Invalid Credentials"
+                        }
+                    ), 400
                 )
             # Create a new user with 'data' without 'password'
             new_user = User(
@@ -702,6 +704,34 @@ def u_connection_by_receiver_id(id):
             return make_response(
                 {"errors": [str(e)]}, 400
             )
+
+
+@app.route('/user_login', methods=["POST"])
+def login():
+    try:
+        data = json.loads(request.data)
+        user = User.query.filter_by(email=data["email"]).first()
+        if user:
+            data_pw = data["password"]
+            access = user.verify(data_pw)
+            if access:
+                # access_token = create_access_token(identity=user.id)
+                # user.jwt = access_token
+                # db.session.add(user)
+                # db.session.commit()
+                response = user.to_dict(rules=('-password',))
+                # response['access_token'] = access_token
+                response['access_token'] = "Successful Login"
+        else:
+            response = {
+                "access_token": ""
+            }
+        return make_response(response, 200)
+        
+    except (ValueError, AttributeError, TypeError) as e:
+        return make_response(
+            {"errors": [str(e)]}, 400
+        )
 
 
 if __name__ == '__main__':
