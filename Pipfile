@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-ipdb = "0.13.9"
+ipdb = "*"
 flask = "*"
 flask-sqlalchemy = "3.0.3"
 Werkzeug = "2.2.2"

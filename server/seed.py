@@ -103,7 +103,7 @@ def create_user_connections(users):
             '''INSERT INTO user_connections (sender_id, receiver_id, reason)VALUES (?, ?, ?);''',
             (sender_id, receiver_id, reason))
         connection.commit()
-
+    connection.close()
     return u_cs
 
 
