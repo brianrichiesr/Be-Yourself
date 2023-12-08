@@ -45,12 +45,11 @@ class User(db.Model, SerializerMixin):
     )
     
 
-    # Relationship mapping the user to related comments
+    # Relationships
     comments = db.relationship(
         'Comment', back_populates="user", cascade='all, delete-orphan')
 
-    # Relationship mapping user to related posts
-    post_comments = association_proxy('comments', 'post',
+    posts_commented_on = association_proxy('comments', 'post',
                               creator=lambda self: Comment(user_id=self.id))
     
     posts_authored = db.relationship('Post', back_populates='post_author', cascade='all, delete-orphan')
