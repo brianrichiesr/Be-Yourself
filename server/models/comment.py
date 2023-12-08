@@ -16,12 +16,12 @@ class Comment(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 
-    # Relationship mapping the review to related user
+    # Relationships
     user = db.relationship('User', back_populates="comments")
     post = db.relationship('Post', back_populates="comments")
 
     # Serialization
-    serialize_rules = ('-user.post_comments', '-post.comments', '-post.user_id', '-user_id', '-post_id')
+    serialize_rules = ('-user.posts_commented_on', '-post.comments', '-post.user_id', '-user_id', '-post_id')
 
     # Add validations
     @validates('comment')

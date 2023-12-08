@@ -16,12 +16,13 @@ class Post(db.Model, SerializerMixin):
     # Foreign key to store the user id
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    # Relationship mapping post to related user
+    # Relationships
     comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
     comment_authors = association_proxy('comments', 'user')
     post_author = db.relationship('User', back_populates='posts_authored')
+
     # Serialization
-    serialize_rules = ('-users.posts_comments', '-comments.post', '-comments.post_id', '-comments.user_id')
+    serialize_rules = ('-users.posts_commented_on', '-comments.post', '-comments.post_id', '-comments.user_id')
 
     # Add validations
     @validates('description')
