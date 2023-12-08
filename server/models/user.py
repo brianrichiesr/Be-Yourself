@@ -53,7 +53,7 @@ class User(db.Model, SerializerMixin):
     post_comments = association_proxy('comments', 'post',
                               creator=lambda self: Comment(user_id=self.id))
     
-    posts_authored = db.relationship('Post', back_populates='post_author')
+    posts_authored = db.relationship('Post', back_populates='post_author', cascade='all, delete-orphan')
 
     # Serialization
     serialize_only = ('user_name', 'email', 'id')

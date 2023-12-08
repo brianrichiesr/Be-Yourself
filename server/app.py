@@ -53,10 +53,17 @@ class Users(Resource):
     def post(self):
         try:
             data = json.loads(request.data)
+            user = User.query.filter_by(email=data["email"]).first()
+            if user:
+                db.session.rollback()
+                return make_response(
+                    {
+                        "errors": "Invalid Credentials"
+                    }
+                )
             
             new_user = User(
-                first_name = data["first_name"],
-                last_name = data["last_name"],
+                user_name = data["user_name"],
                 email = data["email"]
             )
 
@@ -94,13 +101,15 @@ class UserByID(Resource):
             if user:
                 data = json.loads(request.data)
                 for attr in data:
-                    setattr(user, attr, data[attr])
+                    if attr != "id":
+                        setattr(user, attr, data[attr])
                 db.session.add(user)
                 db.session.commit()
                 return make_response(user.to_dict(rules=("-password",)), 200)
             else:
+                db.session.rollback()
                 return make_response(
-                    {"errors": "Update unsuccessful"}, 400
+                    {"errors": "User not found"}, 404
                 )
         except (ValueError, AttributeError, TypeError) as e:
             db.session.rollback()
@@ -112,12 +121,23 @@ class UserByID(Resource):
         try:
             user = db.session.get(User, id)
             if user:
+                connection = sqlite3.connect("instance/app.db")
+                cursor = connection.cursor()
+                cursor.execute(
+                    '''DELETE FROM user_connections WHERE sender_id = (?)''',
+                (id,))
+                cursor.execute(
+                    '''DELETE FROM user_connections WHERE receiver_id = (?)''',
+                (id,))
+                connection.commit()
+                connection.close()
                 db.session.delete(user)
                 db.session.commit()
                 return make_response({}, 204)
             else:
+                db.session.rollback()
                 return make_response(
-                    {"errors": "Delete unsuccessful"}, 400
+                    {"errors": "User not found"}, 404
                 )
         except (ValueError, AttributeError, TypeError) as e:
             db.session.rollback()
@@ -149,7 +169,7 @@ class Posts(Resource):
             new_post = Post(
                 description = data["description"],
                 image = data["image"],
-                status = data["status"]
+                user_id = data["user_id"]
             )
 
             db.session.add(new_post)
@@ -184,13 +204,14 @@ class PostByID(Resource):
             if post:
                 data = json.loads(request.data)
                 for attr in data:
-                    setattr(post, attr, data[attr])
+                    if attr != "id":
+                        setattr(post, attr, data[attr])
                 db.session.add(post)
                 db.session.commit()
                 return make_response(post.to_dict(), 200)
             else:
                 return make_response(
-                    {"errors": "Update unsuccessful"}, 400
+                    {"errors": "Post not found"}, 404
                 )
         except (ValueError, AttributeError, TypeError) as e:
             db.session.rollback()
@@ -207,7 +228,7 @@ class PostByID(Resource):
                 return make_response({}, 204)
             else:
                 return make_response(
-                    {"errors": "Delete unsuccessful"}, 400
+                    {"errors": "Post not found"}, 404
                 )
         except (ValueError, AttributeError, TypeError) as e:
             db.session.rollback()
@@ -232,14 +253,24 @@ class Comments(Resource):
                 {"errors": [str(e)]}, 400
             )
     
-    def comment(self):
+    def post(self):
         try:
             data = json.loads(request.data)
-            
+            post = db.session.get('Post', data['post_id'])
+            if not post:
+                return make_response(
+                    {"errors": "Post not found"}
+                )
+            user = db.session.get('User', data['user_id'])
+            if not user:
+                return make_response(
+                    {"errors": "User not found"}
+                )
             new_comment = Comment(
                 comment = data["comment"],
-                image = data["image"],
-                created_at = datetime.now()
+                created_at = datetime.now(),
+                user_id = data["user_id"],
+                post_id = data["post_id"]
             )
 
             db.session.add(new_comment)
@@ -273,14 +304,25 @@ class CommentByID(Resource):
             comment = db.session.get(Comment, id)
             if comment:
                 data = json.loads(request.data)
+                post = db.session.get(Post, data['post_id'])
+                if not post:
+                    return make_response(
+                        {"errors": "Post not found"}
+                    )
+                user = db.session.get(User, data['user_id'])
+                if not user:
+                    return make_response(
+                        {"errors": "User not found"}
+                    )
                 for attr in data:
-                    setattr(comment, attr, data[attr])
+                    if attr != "id":
+                        setattr(comment, attr, data[attr])
                 db.session.add(comment)
                 db.session.commit()
                 return make_response(comment.to_dict(), 200)
             else:
                 return make_response(
-                    {"errors": "Update unsuccessful"}, 400
+                    {"errors": "Comment not found"}, 404
                 )
         except (ValueError, AttributeError, TypeError) as e:
             db.session.rollback()
@@ -297,7 +339,7 @@ class CommentByID(Resource):
                 return make_response({}, 204)
             else:
                 return make_response(
-                    {"errors": "Delete unsuccessful"}, 400
+                    {"errors": "Comment not found"}, 404
                 )
         except (ValueError, AttributeError, TypeError) as e:
             db.session.rollback()
@@ -383,7 +425,8 @@ def u_connection_by_id(id):
                 )
             data = json.loads(request.data)
             for attr in data:
-                response[attr] = data[attr]
+                if attr != "id":
+                    response[attr] = data[attr]
             cursor.execute(
                 '''UPDATE user_connections SET sender_id = (?), receiver_id = (?), status = (?), reason = (?) WHERE id = (?)''',
                 (response["sender_id"], response["receiver_id"], response["status"], response["reason"], id))
