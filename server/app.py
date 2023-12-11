@@ -8,9 +8,11 @@ import sqlite3
 from flask import request, make_response, jsonify
 from flask_restful import Resource
 from datetime import datetime
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
 # Local imports
 from config import app, db, api
+
 # Add your model imports
 from models.user import User
 from models.user import user_connections
@@ -198,9 +200,11 @@ api.add_resource(UserByID, '/users/<int:id>')
 
 # Restful routes for 'Post' model
 class Posts(Resource):
-
+    @jwt_required()
     def get(self):
         try:
+            current_user = get_jwt_identity()
+            print(f"Current - {current_user}")
             # Create empty list
             p_list = []
             # Query 'Post' table and assign all posts to variable
@@ -715,13 +719,9 @@ def login():
             data_pw = data["password"]
             access = user.verify(data_pw)
             if access:
-                # access_token = create_access_token(identity=user.id)
-                # user.jwt = access_token
-                # db.session.add(user)
-                # db.session.commit()
+                access_token = create_access_token(identity=user.id)
                 response = user.to_dict(rules=('-password',))
-                # response['access_token'] = access_token
-                response['access_token'] = "Successful Login"
+                response['access_token'] = access_token
         else:
             response = {
                 "access_token": ""

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
+import UserContext from "./User";
 
 
 function Login () {
@@ -18,6 +19,8 @@ function Login () {
         email: Yup.string().email('Invalid email').required('Required'),
       });
 
+    const value = useContext(UserContext)
+    const updateUser = value[0]
     return (
         <div>
             <h2>Login</h2>
@@ -44,9 +47,9 @@ function Login () {
                             throw ("Access Denied");
                         }
                         console.log("User -", data)
-                        setLoginError("Successful Login");
-                        // alert("Thank you for being you!");
-                        // navigate('/main');
+                        updateUser(data);
+                        alert("Thank you for being you!");
+                        navigate('/main');
                     })
                     .catch(err => {
                         alert(err)
