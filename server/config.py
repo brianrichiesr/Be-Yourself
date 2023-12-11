@@ -11,11 +11,13 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import validates
 from sqlalchemy import MetaData
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
 
 # Local imports
 
 # Instantiate app, set attributes
 app = Flask(__name__)
+app.config["JWT_SECRET_KEY"] = "placeholder-secret-key"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
@@ -28,6 +30,7 @@ db = SQLAlchemy(metadata=metadata)
 migrate = Migrate(app, db)
 db.init_app(app)
 flask_bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
 
 # Instantiate REST API
 api = Api(app)
