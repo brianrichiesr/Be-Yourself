@@ -8,7 +8,18 @@ import sqlite3
 from flask import request, make_response, jsonify
 from flask_restful import Resource
 from datetime import datetime
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    jwt_required,
+    get_jwt_identity,
+    current_user,
+    get_jwt,
+    # set_access_cookies,
+    # set_refresh_cookies,
+    # unset_access_cookies,
+    # unset_refresh_cookies,
+    )
 
 # Local imports
 from config import app, db, api
@@ -77,11 +88,9 @@ class Users(Resource):
             if user:
                 # Return response object and 400 status
                 return make_response(
-                    jsonify(
-                        {
-                            "errors": "Invalid Credentials"
-                        }
-                    ), 400
+                    {
+                        "errors": "Invalid Credentials"
+                    }, 403
                 )
             # Create a new user with 'data' without 'password'
             new_user = User(
@@ -93,8 +102,12 @@ class Users(Resource):
             # Add new user to session and commit new user to db table
             db.session.add(new_user)
             db.session.commit()
+            access_token = create_access_token(identity=new_user.id)
+            response = {"user": new_user.to_dict(rules=('-password',))}
+            response['access_token'] = access_token
+            # return make_response(response, 200)
             # Return response object without 'password' and 201 status
-            return make_response(new_user.to_dict(rules=("-password",)), 201)
+            return make_response(response, 201)
         # If functionality in try fails, raise error and 400 status
         except (ValueError, AttributeError, TypeError) as e:
             # Remove staged changes
@@ -203,8 +216,8 @@ class Posts(Resource):
     @jwt_required()
     def get(self):
         try:
-            current_user = get_jwt_identity()
-            print(f"Current - {current_user}")
+            # current_user = get_jwt_identity()
+            # print(f"Current - {current_user}")
             # Create empty list
             p_list = []
             # Query 'Post' table and assign all posts to variable
@@ -212,7 +225,7 @@ class Posts(Resource):
             # Iterate through variable
             for post in posts:
                 # Convert each object in posts to dict
-                p_list.append(post.to_dict())
+                p_list.append(post.to_dict(rules=('-user_id',)))
             # Return response object and 200 status
             return make_response(p_list, 200)
         # If functionality in try fails, raise error and 400 status
@@ -720,18 +733,33 @@ def login():
             access = user.verify(data_pw)
             if access:
                 access_token = create_access_token(identity=user.id)
-                response = user.to_dict(rules=('-password',))
+                response = {"user": user.to_dict(rules=('-password',))}
                 response['access_token'] = access_token
+                return make_response(response, 200)
         else:
             response = {
-                "access_token": ""
+                "access_token": "",
+                "message": "Invalid Credentials"
             }
-        return make_response(response, 200)
+            return make_response(response, 403)
         
     except (ValueError, AttributeError, TypeError) as e:
         return make_response(
             {"errors": [str(e)]}, 400
         )
+
+
+@app.route('/check_user')
+@jwt_required()
+def check_user():
+    user = db.session.get(User, get_jwt_identity())
+    if user:
+        return make_response({"user": user.to_dict(rules=('-password',))})
+    response = {
+        "access_token": "",
+        "message": "Unauthorized Access"
+    }
+    return make_response(response, 403)
 
 
 if __name__ == '__main__':

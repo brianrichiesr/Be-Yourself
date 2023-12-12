@@ -51,7 +51,7 @@ def create_posts(users):
         # Create a new post with fake data and assign to variable
         p = Post(
             user_id=rc([user.id for user in users]),
-            description = fake.sentence(),
+            description = fake.paragraph(),
             image = fake.image_url()
         )
         # Append new post to list

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
+import UserContext from "./User";
 
 
 function Signup () {
@@ -9,6 +10,9 @@ function Signup () {
     const [signupError, setSignupError] = useState("")
 
     const navigate = useNavigate();
+
+    const value = useContext(UserContext)
+    const updateUser = value[0]
 
     const SignupSchema = Yup.object().shape({
         user_name: Yup.string()
@@ -48,8 +52,11 @@ function Signup () {
                             setSignupError(data.errors);
                             throw (data.errors);
                         }
+                        updateUser(data["user"]);
+                        console.log("data = ", data)
+                        localStorage.setItem("access_token", JSON.stringify(data.access_token))
                         alert("Thank you for being you!");
-                        navigate('/main');
+                        navigate('/posts');
                     })
                     .catch(err => {
                         alert(err)

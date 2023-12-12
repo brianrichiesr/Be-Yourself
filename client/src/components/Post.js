@@ -1,7 +1,5 @@
-import React from "react";
+import { createContext } from "react";
 
-function Post() {
-  return <div>Post</div>;
-}
+const PostContext = createContext(null)
 
-export default Post;
+export default PostContext;
