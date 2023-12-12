@@ -44,17 +44,17 @@ function Login () {
                     .then(data => {
                         if (!data.access_token) {
                             setLoginError("Invalid Creditials");
-                            throw ("Access Denied");
+                            localStorage.clear()
+                            throw new Error ("Access Denied");
                         }
-                        console.log("User -", data)
-                        updateUser(data);
+                        updateUser(data["user"]);
+                        localStorage.setItem("access_token", JSON.stringify(data.access_token))
                         alert("Thank you for being you!");
-                        navigate('/main');
+                        navigate('/posts');
                     })
                     .catch(err => {
                         alert(err)
                     })
-                    // navigate('/main')
                 }}
             >
 

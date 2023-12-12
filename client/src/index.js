@@ -17,9 +17,10 @@ import Post from "./components/Post";
 import Error from "./components/Error";
 import Landing from "./components/Landing";
 import Signup from "./components/Signup";
-import Main from "./components/Main";
+import Posts from "./components/Posts";
 import Submission from "./components/Submission";
 import Login from "./components/Login";
+import PostDetails from "./components/PostDetails";
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
@@ -43,8 +44,8 @@ const router = createBrowserRouter([
         element: <Signup />
       }, 
       {
-        path: "/main",
-        element: <Main />
+        path: "/posts",
+        element: <Posts />
       }, 
       {
         path: "/submission",
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "/posts",
         element: <Post />
+      }, 
+      {
+        path: "/posts/:id",
+        element: <PostDetails />
       }
     ]
   }
