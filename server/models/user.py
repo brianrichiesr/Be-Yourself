@@ -28,6 +28,7 @@ class User(db.Model, SerializerMixin):
     user_name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     _password = db.Column(db.String, nullable=False)
+    admin = db.Column(db.Boolean, nullable=False, default=False)
 
     # Relationships
     pending_sent_connections = db.relationship(

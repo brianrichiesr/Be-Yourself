@@ -33,6 +33,7 @@ def create_users():
         c = User(
             user_name=fake.name(),
             email=fake.email(),
+            admin=fake.boolean(chance_of_getting_true=20),
         )
         # Assign password after user is instantiated to make use of encryption attribute
         c.password = "password"
@@ -52,7 +53,8 @@ def create_posts(users):
         p = Post(
             user_id=rc([user.id for user in users]),
             description = fake.paragraph(),
-            image = fake.image_url()
+            image = fake.image_url(),
+            honoree_id=rc([user.id for user in users])
         )
         # Append new post to list
         posts.append(p)
