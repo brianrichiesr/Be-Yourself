@@ -3,12 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { v4 as uuid } from 'uuid';
 
 function PostDetails() {
-// comments: [{…}, {…}, {…}, {…}, {…}]
-// description: "Service certainly identify firm product. Friend network bank figure apply stop subject."
-// id: 14
-// image: "https://dummyimage.com/751x687"
-// post_author: {email: 'vbaxter@example.net', id: 8, user_name: 'Jeffrey Guerrero'}
-// status: "pending"
 
     const postObj = {
         comments: [],

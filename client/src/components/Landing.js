@@ -1,6 +1,7 @@
 import React from "react";
 
 function Landing() {
+  localStorage.clear()
   return <div>Landing</div>;
 }
 

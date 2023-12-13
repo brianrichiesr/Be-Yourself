@@ -7,11 +7,11 @@ import UserContext from "./User";
 
 function App() {
 
-  const demo = {
+  const default_user = {
     user_name: "",
     id: 0
   }
-  const [user, setUser] = useState(demo)
+  const [user, setUser] = useState(default_user)
   const navigate = useNavigate()
   
 

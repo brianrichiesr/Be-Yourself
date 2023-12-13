@@ -21,6 +21,13 @@ function Login () {
 
     const value = useContext(UserContext)
     const updateUser = value[0]
+    if (value[2].user_name) {
+        return (
+            <>
+                <h2>You are already logged in.</h2>
+            </>
+        )
+    }
     return (
         <div>
             <h2>Login</h2>

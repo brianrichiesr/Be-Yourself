@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PostContext from "./Post";
 import PostCard from "./PostCard";
+import { v4 as uuid } from 'uuid'
 
 function Posts() {
 
@@ -86,8 +87,8 @@ function Posts() {
       <div>Main</div>
         <div>{posts.map((item, idx) => {
           return (
-            <PostContext.Provider key={`key-post-${idx}`} value={item}>
-            <PostCard />
+            <PostContext.Provider key={uuid()} value={item}>
+            <PostCard num={idx} />
           </PostContext.Provider>
           )
 

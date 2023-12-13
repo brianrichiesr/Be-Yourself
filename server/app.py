@@ -152,12 +152,16 @@ class UserByID(Resource):
                     # If the attribute is not 'id'
                     if attr != "id":
                         # Set the value of the attribute to the value of corresponding key in 'data'
-                        setattr(user, attr, data[attr])
+                        if data[attr]:
+                            setattr(user, attr, data[attr])
                 # Add new user to session and commit new user to db table
                 db.session.add(user)
                 db.session.commit()
+                access_token = create_access_token(identity=user.id)
+                response = {"user": user.to_dict(rules=('-password',))}
+                response['access_token'] = access_token
                 # Return response object without 'password' and 200 status
-                return make_response(user.to_dict(rules=("-password",)), 200)
+                return make_response(response, 200)
             else:
                 # Else return error in response object and 404 status
                 return make_response(
@@ -191,6 +195,9 @@ class UserByID(Resource):
                 # Commit changes and close connection
                 connection.commit()
                 connection.close()
+                posts = Post.query.filter_by(honoree_id=id).all()
+                for post in posts:
+                    db.session.delete(post)
                 # Then delete user and commit changes
                 db.session.delete(user)
                 db.session.commit()
