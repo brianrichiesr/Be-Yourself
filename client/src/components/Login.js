@@ -49,6 +49,7 @@ function Login () {
                         }
                         updateUser(data["user"]);
                         localStorage.setItem("access_token", JSON.stringify(data.access_token))
+                        localStorage.setItem("refresh_token", JSON.stringify(data.refresh_token))
                         alert("Thank you for being you!");
                         navigate('/posts');
                     })

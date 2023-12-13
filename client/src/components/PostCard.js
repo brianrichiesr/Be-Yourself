@@ -15,6 +15,7 @@ function PostCard() {
         {/* {console.log('comments', value)} */}
         <h2>Post # {value.id}</h2>
         <img src={value.image} alt="post image" />
+        <h2>Honoring: {value.honoree["user_name"]}</h2>
         <h2>{description}</h2>
         <h3>Comments:</h3>
         {value.comments.map((item, idx) => {

@@ -20,6 +20,11 @@ function PostDetails() {
             id: 0,
             user_name: ""
         },
+        honoree: {
+            email: "",
+            id: 0,
+            user_name: ""
+        },
         status: "pending"
     }
 
@@ -36,16 +41,18 @@ function PostDetails() {
                 throw (res.statusText)
             }
         })
-        .then(setPost)
+        .then(data => setPost(data))
         .catch(err => {
             alert(err)
-            navigate('/main')
+            navigate('/')
         })
     }, [])
 
     return <div className="post-details">
+        <div>Post Details</div>
         <h2>Post # {post.id}</h2>
         <img src={post.image} alt="post image" />
+        <h2>Honoring: {post.honoree["user_name"]}</h2>
         <h2>{post.description}</h2>
         <h3>Comments:</h3>
         {post.comments.map(item => {

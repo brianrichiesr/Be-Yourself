@@ -15,6 +15,7 @@ class Post(db.Model, SerializerMixin):
 
     # Foreign key to store the user id
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    honoree_id = db.Column(db.Integer, nullable=False)
 
     # Relationships
     comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')

@@ -225,7 +225,11 @@ class Posts(Resource):
             # Iterate through variable
             for post in posts:
                 # Convert each object in posts to dict
-                p_list.append(post.to_dict(rules=('-user_id',)))
+                honoree = db.session.get(User, post.honoree_id)
+                post_to_be_displayed = post.to_dict(rules=('-user_id',))
+                post_to_be_displayed["honoree"] = honoree.to_dict()
+                p_list.append(post_to_be_displayed)
+                # p_list.append(post.to_dict(rules=('-user_id',)))
             # Return response object and 200 status
             return make_response(p_list, 200)
         # If functionality in try fails, raise error and 400 status
@@ -268,7 +272,10 @@ class PostByID(Resource):
             post = db.session.get(Post, id)
             # If a post exists, return user in dict
             if post:
-                return make_response(post.to_dict(), 200)
+                honoree = db.session.get(User, post.honoree_id)
+                post_to_be_displayed = post.to_dict()
+                post_to_be_displayed["honoree"] = honoree.to_dict()
+                return make_response(post_to_be_displayed, 200)
             # Else return error in response object and 404 status
             else:
                 return make_response(
@@ -732,9 +739,11 @@ def login():
             data_pw = data["password"]
             access = user.verify(data_pw)
             if access:
+                refresh_token = create_refresh_token(identity=user.id)
                 access_token = create_access_token(identity=user.id)
                 response = {"user": user.to_dict(rules=('-password',))}
                 response['access_token'] = access_token
+                response['refresh_token'] = refresh_token
                 return make_response(response, 200)
         else:
             response = {
@@ -749,18 +758,32 @@ def login():
         )
 
 
-@app.route('/check_user')
+@app.route('/check_token')
 @jwt_required()
-def check_user():
+def check_token():
     user = db.session.get(User, get_jwt_identity())
     if user:
-        return make_response({"user": user.to_dict(rules=('-password',))})
+        return make_response({"user": user.to_dict(rules=('-password',))}, 200)
     response = {
         "access_token": "",
-        "message": "Unauthorized Access"
+        "msg": "Unauthorized Access"
     }
     return make_response(response, 403)
 
+@app.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    try:
+        id = get_jwt_identity()
+        user = db.session.get(User, id)
+        access_token = create_access_token(identity=id)
+        response = {
+            "user": user.to_dict(rules=('-password',)),
+            "access_token": access_token
+        }
+        return make_response(response, 200)
+    except Exception as e:
+        return {"message": str(e)}, 400
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

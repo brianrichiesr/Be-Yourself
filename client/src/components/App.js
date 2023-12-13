@@ -8,52 +8,56 @@ import UserContext from "./User";
 function App() {
 
   const demo = {
-    user_name: "Nobody",
+    user_name: "",
     id: 0
   }
   const [user, setUser] = useState(demo)
   const navigate = useNavigate()
-  const token = JSON.parse(localStorage.getItem('access_token'))
+  
+
+  const checkToken = (acc_token) => fetch("/check_token", {
+    headers: {
+      "Authorization": `Bearer ${acc_token}`
+    }
+  })
+
+  const postRefreshToken = (ref_token) => {
+    return fetch("/refresh", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${ref_token}`
+      }
+    })
+  }
   
   useEffect(() => {
-    
-
-    if (token) {
-      fetch('/check_user', {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
-      })
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        } else {
-          localStorage.clear()
-          setUser({user_name: "Unauthorized", id: 0})
-          navigate('/')
-        }
-      })
-      .then(data => {
-        console.log("App", data)
-          if (data.errors) {
-              // setSignupError(data.errors);
-              localStorage.clear()
-              setUser({user_name: "Errors", id: 0})
-              // throw (data.errors);
-              navigate('/')
+    const token = JSON.parse(localStorage.getItem('access_token'))
+    const refresh_token = JSON.parse(localStorage.getItem('refresh_token'))
+    checkToken(token)
+    .then(res => {
+      if (res.ok) {
+        return res.json()
+      } else if (res.status === 401) {
+        postRefreshToken(refresh_token)
+        .then(resp => {
+          if (resp.ok) {
+            return resp.json()
+          } else {
+            localStorage.clear()
+            alert("Access Has Expired, Please Login Again")
           }
-          data["access_token"] = token
-          setUser(data["user"]);
-      })
-      .catch(err => {
-        localStorage.clear()
-        setUser({user_name: "Catch", id: 0})
-        navigate('/')
-        alert(err)
-      })
-    }
+        })
+        .then(data => {
+          localStorage.setItem("access_token", JSON.stringify(data["access_token"]))
+          setUser(data["user"])
+        })
+      }
+    })
+    .then(data => {
+      if (data) {
+        setUser(data["user"])
+      }
+    })
   }, [])
 
   const clickMe = (obj) => {

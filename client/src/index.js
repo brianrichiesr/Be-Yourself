@@ -7,13 +7,12 @@
 // const root = createRoot(container);
 // root.render(<App />);
 
-import { StrictMode } from "react";
+// import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 import "./index.css"
 import App from "./components/App";
-import Post from "./components/Post";
 import Error from "./components/Error";
 import Landing from "./components/Landing";
 import Signup from "./components/Signup";
@@ -27,7 +26,6 @@ const root = createRoot(rootElement);
 
 const router = createBrowserRouter([
   {
-    path: "/",
     element: <App />,
     errorElement: <Error />,
     children: [
@@ -48,23 +46,19 @@ const router = createBrowserRouter([
         element: <Posts />
       }, 
       {
-        path: "/submission",
-        element: <Submission />
-      }, 
-      {
-        path: "/posts",
-        element: <Post />
-      }, 
-      {
         path: "/posts/:id",
         element: <PostDetails />
+      }, 
+      {
+        path: "/submission",
+        element: <Submission />
       }
     ]
   }
 ])
 
 root.render(
-    <StrictMode>
+    // <StrictMode>
         <RouterProvider router={router} />
-    </StrictMode>
+    // </StrictMode>
 );
