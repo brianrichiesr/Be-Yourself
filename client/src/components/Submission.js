@@ -1,24 +1,17 @@
-import React, { useState, useContext } from "react";
-// import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import UserContext from "./User";
-
-// user_id
-// description
-// image
-// honoree_id
-
 
 function Submission () {
 
     const [submissionError, setSubmissionError] = useState("")
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
-    const value = useContext(UserContext)
-    // const updateUser = value[0]
-    const user = value[2]
+    const user_data = useContext(UserContext)
+
 
     const SubmissionSchema = Yup.object().shape({
         honoree_id: Yup.number()
@@ -29,40 +22,97 @@ function Submission () {
           .required('Required'),
         image: Yup.string(),
       });
+    
+    const submitPost = (values) => {
+      // const updateUser = user_data[0]
+      const user = user_data[2]
+      values["user_id"] = user["id"]
+      console.log("values", values)
+      fetch("/posts", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(values)
+      })
+      .then(res => {
+          return res.json();
+      })
+      .then(data => {
+          if (data.errors) {
+              setSubmissionError(data.errors);
+              throw (data.errors);
+          }
+          console.log("submission -", data)
+          alert("Successful Submission!");
+      })
+      .catch(err => {
+          alert(err)
+      })
+    }
+
+    const checkToken = (acc_token) => fetch("/check_token", {
+      headers: {
+        "Authorization": `Bearer ${acc_token}`
+      }
+    })
+  
+    const postRefreshToken = (ref_token) => {
+      return fetch("/refresh", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${ref_token}`
+        }
+      })
+    }
+    
+    useEffect(() => {
+      const token = JSON.parse(localStorage.getItem('access_token'))
+      if (!token) {
+        localStorage.clear()
+        navigate('/')
+        return
+      }
+      const refresh_token = JSON.parse(localStorage.getItem('refresh_token'))
+      checkToken(token)
+  
+      checkToken(token)
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        } else if (res.status === 401) {
+          postRefreshToken(refresh_token)
+          .then(resp => {
+            if (resp.ok) {
+              return resp.json()
+            } else {
+              localStorage.clear()
+              alert("Access Has Expired, Please Login Again")
+            }
+          })
+          .then(data => {
+            localStorage.setItem("access_token", JSON.stringify(data["access_token"]))
+          })
+          .catch(err => alert(err))
+        }
+      })
+      .catch(err => alert(err))
+      
+      }, [])
 
     return (
         <div>
-            <h2>Sign Up</h2>
+            <h2>Submit A Post</h2>
             <Formik
                 initialValues={{
-                  user_id: user.user_id || 0,
                   description: '',
                   image: '',
                   honoree_id: '',
                 }}
                 validationSchema={SubmissionSchema}
                 onSubmit={async (values) => {
-                    fetch("/posts", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(values)
-                    })
-                    .then(res => {
-                        return res.json();
-                    })
-                    .then(data => {
-                        if (data.errors) {
-                            setSubmissionError(data.errors);
-                            throw (data.errors);
-                        }
-                        console.log("data = ", data)
-                        alert("Thank you for being you!");
-                    })
-                    .catch(err => {
-                        alert(err)
-                    })
+                  // debugger
+                    submitPost(values)
                     // navigate('/main')
                 }}
             >

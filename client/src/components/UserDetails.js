@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import UserContext from "./User";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 
-function Profile() {
+function UserDetails() {
     const value = useContext(UserContext)
-    const [user, setUser] = useState(value[2])
+    const [adminUser, setAdminUser] = useState(value[2])
+    const [user, setUser] = useState({})
     const [updateError, setUpdateError] = useState("")
     const updateUser = value[0]
     const navigate = useNavigate()
@@ -19,10 +20,11 @@ function Profile() {
         .min(2, 'Too Short!')
         .max(50, 'Too Long!'),
         email: Yup.string().email('Invalid email'),
+        admin: Yup.boolean()
     });
     const user_name = user.user_name || ""
     const email = user.email || ""
-    const id = user.id || 0
+    const { id } = useParams()
     const checkToken = (acc_token) => fetch("/check_token", {
         headers: {
           "Authorization": `Bearer ${acc_token}`
@@ -39,18 +41,13 @@ function Profile() {
     }
 
     const deleteProfile = () => {
-        const confirm = prompt("Are you sure you want to delete your profile? (y)es or (n)o?")
+        const confirm = prompt("Are you sure you want to delete this profile? (y)es or (n)o?")
         if (confirm.toLowerCase() === "y" || confirm.toLowerCase() === "yes") {
         fetch(`/users/${id}`, {
             method: "DELETE"
         })
         .then(() => {
-            updateUser({
-                user_name: "",
-                id: 0
-            })
-            localStorage.clear()
-            navigate('/')
+            navigate('/user')
         })
         } else {
         console.log("No changes made")
@@ -58,8 +55,9 @@ function Profile() {
     }
 
     const updateProfile = (values) => {
-        const confirm = prompt("Are you sure you want to update your profile? (y)es or (n)o?")
+        const confirm = prompt("Are you sure you want to update this profile? (y)es or (n)o?")
         if (confirm.toLowerCase() === "y" || confirm.toLowerCase() === "yes") {
+            console.log("update", values.admin)
             fetch(`/users/${id}`, {
                 method: "PATCH",
                 headers: {
@@ -75,10 +73,10 @@ function Profile() {
                     setUpdateError(data.errors);
                     throw (data.errors);
                 }
-                updateUser(data["user"]);
+                // updateUser(data["user"]);
+                // localStorage.setItem("access_token", JSON.stringify(data.access_token))
                 console.log("data = ", data)
-                localStorage.setItem("access_token", JSON.stringify(data.access_token))
-                alert("Your account has been updated!");
+                alert("This account has been updated!");
             })
             .catch(err => {
                 alert(err)
@@ -95,7 +93,10 @@ function Profile() {
                 throw (res.statusText)
             }
         })
-        .then(data => console.log("all user", data))
+        .then(data => {
+            console.log("user admin", data.admin)
+            setUser(data)
+        })
         .catch(err => alert(err))
     }
       
@@ -125,29 +126,37 @@ function Profile() {
             })
             .then(data => {
                 localStorage.setItem("access_token", JSON.stringify(data["access_token"]))
-                get_user(data.user.id)
-                setUser(data.user)
+                get_user(id)
             })
             .catch(err => alert(err))
             }
         })
         .then(data => {
             if (data) {
-                get_user(data.user.id)
-                setUser(data.user)
+                get_user(id)
             } 
         })
         .catch(err => alert(err))
         
     }, [])
+    const toggleChecked = (e) => {
+        const temp_user = {...user}
+        temp_user.admin = !temp_user.admin
+        setUser(temp_user)
+        console.log("e", e.target)
+    }
+    if (!adminUser[2] || !adminUser[2].admin) {
+        return <h1>You are not authorized to view this page!</h1>
+    }
     return (
         <div>
-            <h2>Profile</h2>
+            <h2>User: {user.user_name}</h2>
             <Formik
                 initialValues={{
                 user_name: '',
                 password: '',
                 email: '',
+                admin: user.admin
                 }}
                 validationSchema={UpdateSchema}
                 onSubmit={async (values) => {
@@ -188,6 +197,20 @@ function Profile() {
                                 <span> {errors.password}</span>
                             ) : null}
                         </div>
+                        <div>
+                            <label htmlFor="admin">Admin</label>
+                            <Field
+                                id="admin"
+                                name="admin"
+                                type="checkbox"
+                                checked={user.admin}
+                                autoComplete="off"
+                                onClick={(e) => toggleChecked(e)}
+                            />
+                            {errors.admin && touched.admin ? (
+                                <span> {errors.admin}</span>
+                            ) : null}
+                        </div>
         
                         <button type="submit">Update</button>
 
@@ -200,4 +223,4 @@ function Profile() {
     )
 };
 
-export default Profile;
+export default UserDetails;

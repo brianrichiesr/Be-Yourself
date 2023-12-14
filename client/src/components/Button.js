@@ -11,6 +11,7 @@ function Button({ target }) {
         "Profile": "profile",
         "Signup": "signup",
         "Submission": "submission",
+        "Users": "users"
     }
     const value = useContext(UserContext)
     const sendUser = () => {

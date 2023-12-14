@@ -68,7 +68,7 @@ function App() {
     <div>
       <UserContext.Provider value={[clickMe, "This is how useContext works!", user]}>
         <Navbar />
-      <h1>App Header</h1>
+      <h1>{user.admin ? "Admin Header" : "App Header"}</h1>
       <Outlet />
       <Footer />
       </UserContext.Provider>

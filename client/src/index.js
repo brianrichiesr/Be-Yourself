@@ -21,6 +21,8 @@ import Submission from "./components/Submission";
 import Login from "./components/Login";
 import PostDetails from "./components/PostDetails";
 import Profile from "./components/Profile";
+import Users from "./components/Users";
+import UserDetails from "./components/UserDetails";
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
@@ -50,6 +52,14 @@ const router = createBrowserRouter([
         path: "/posts/:id",
         element: <PostDetails />
       }, 
+      {
+        path: "/users",
+        element: <Users />
+      }, 
+      {
+        path: "/users/:id",
+        element: <UserDetails />
+      },, 
       {
         path: "/submission",
         element: <Submission />

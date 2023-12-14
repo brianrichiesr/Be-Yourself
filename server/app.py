@@ -20,6 +20,7 @@ from flask_jwt_extended import (
     # unset_access_cookies,
     # unset_refresh_cookies,
     )
+from sqlalchemy import desc
 
 # Local imports
 from config import app, db, api
@@ -126,7 +127,26 @@ class UserByID(Resource):
             user = db.session.get(User, id)
             # If a user exists, return user in dict without 'password'
             if user:
-                return make_response(user.to_dict(rules=('-password',)), 200)
+                # Create a connection to the 'user_connections' table
+                connection = sqlite3.connect("instance/app.db")
+                cursor = connection.cursor()
+                # Grab rows from 'user_connections' table where 'id' passed matches the row's 'sender_id' and assign it to variable
+                results = cursor.execute(
+                    '''SELECT * FROM user_connections WHERE sender_id = (?)''',
+                    (id,))
+                # Pass 'results' to helper function and assign to variable
+                response = convert_sql(results)
+                # Grab rows from 'user_connections' table where 'id' passed matches the row's 'sender_id' and assign it to variable
+                results2 = cursor.execute(
+                    '''SELECT * FROM user_connections WHERE receiver_id = (?)''',
+                    (id,))
+                # Pass 'results' to helper function and assign to variable
+                response2 = convert_sql(results2)
+                connection.close()
+                user = user.to_dict(rules=('-password',))
+                user["connections_sent"] = response
+                user["connections_received"] = response2
+                return make_response(user, 200)
             # Else return error in response object and 404 status
             else:
                 return make_response(
@@ -152,7 +172,7 @@ class UserByID(Resource):
                     # If the attribute is not 'id'
                     if attr != "id":
                         # Set the value of the attribute to the value of corresponding key in 'data'
-                        if data[attr]:
+                        if attr == 'admin' or data[attr]:
                             setattr(user, attr, data[attr])
                 # Add new user to session and commit new user to db table
                 db.session.add(user)
@@ -228,7 +248,7 @@ class Posts(Resource):
             # Create empty list
             p_list = []
             # Query 'Post' table and assign all posts to variable
-            posts = Post.query
+            posts = Post.query.order_by(desc("id"))
             # Iterate through variable
             for post in posts:
                 # Convert each object in posts to dict
@@ -250,16 +270,24 @@ class Posts(Resource):
             # Convert data from request body to json object
             data = json.loads(request.data)
             # Create a new post with 'data' 
-            new_post = Post(
-                description = data["description"],
-                image = data["image"],
-                user_id = data["user_id"]
-            )
-            # Add new post to session and commit new user to db table
-            db.session.add(new_post)
-            db.session.commit()
-            # Return response object and 201 status
-            return make_response(new_post.to_dict(), 201)
+            honoree_id = data["honoree_id"]
+            honoree = db.session.get(User, honoree_id)
+            if honoree:
+                new_post = Post(
+                    description = data["description"],
+                    image = data["image"],
+                    user_id = data["user_id"],
+                    honoree_id = honoree_id
+                )
+                # Add new post to session and commit new user to db table
+                db.session.add(new_post)
+                db.session.commit()
+                # Return response object and 201 status
+                return make_response(new_post.to_dict(), 201)
+            else:
+                return make_response(
+                    {"errors": "Honoree Not Found"}, 404
+                )
         # If functionality in try fails, raise error and 400 status
         except (ValueError, AttributeError, TypeError) as e:
             # Remove staged changes
