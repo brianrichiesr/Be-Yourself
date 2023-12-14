@@ -21,6 +21,7 @@ from flask_jwt_extended import (
     # unset_refresh_cookies,
     )
 from sqlalchemy import desc
+import requests
 
 # Local imports
 from config import app, db, api
@@ -819,6 +820,45 @@ def refresh():
         return make_response(response, 200)
     except Exception as e:
         return {"message": str(e)}, 400
+
+@app.route('/login_with_google', methods=["POST"])
+def login_with_google():
+    try:
+        data = json.loads(request.data)
+        req = requests.get(
+            f"https://www.googleapis.com/oauth2/v1/userinfo?access_token={data['access_token']}",
+            headers={"Content-Type": "text"})
+        res = req.json()
+        verified_email = res['verified_email']
+        if req.status_code == 200 and verified_email:
+            email = res['email']
+            print(f"Google - {email} - {verified_email} - {req.status_code}")
+            user = User.query.filter_by(email=email).first()
+            if user:      
+                refresh_token = create_refresh_token(identity=user.id)
+                access_token = create_access_token(identity=user.id)
+                response = {"user": user.to_dict(rules=('-password',))}
+                response['access_token'] = access_token
+                response['refresh_token'] = refresh_token
+                return make_response(response, 200)
+            else:
+                response = {
+                    "access_token": "",
+                    "message": "User not found"
+                }
+                return make_response(response, 401)
+        else:
+            response = {
+                "access_token": "",
+                "message": "Invalid Credentials"
+            }
+            return make_response(response, 403)
+        
+    except (ValueError, AttributeError, TypeError) as e:
+        return make_response(
+            {"errors": [str(e)]}, 400
+        )
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

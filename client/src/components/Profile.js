@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast"
 import UserContext from "./User";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
@@ -73,7 +74,8 @@ function Profile() {
             .then(data => {
                 if (data.errors) {
                     setUpdateError(data.errors);
-                    throw (data.errors);
+                    toast(data.errors);
+                    return
                 }
                 updateUser(data["user"]);
                 console.log("data = ", data)
@@ -92,10 +94,10 @@ function Profile() {
             if (res.ok) {
                 return res.json()
             } else {
-                throw (res.statusText)
+                toast(res.statusText)
+                return
             }
         })
-        .then(data => console.log("all user", data))
         .catch(err => alert(err))
     }
       
@@ -120,7 +122,8 @@ function Profile() {
                 return resp.json()
                 } else {
                 localStorage.clear()
-                alert("Access Has Expired, Please Login Again")
+                toast("Access Has Expired, Please Login Again")
+                return
                 }
             })
             .then(data => {
@@ -128,7 +131,7 @@ function Profile() {
                 get_user(data.user.id)
                 setUser(data.user)
             })
-            .catch(err => alert(err))
+            .catch(err => toast(err))
             }
         })
         .then(data => {
@@ -137,11 +140,12 @@ function Profile() {
                 setUser(data.user)
             } 
         })
-        .catch(err => alert(err))
+        .catch(err => toast(err))
         
     }, [])
     return (
         <div>
+            <Toaster />
             <h2>Profile</h2>
             <Formik
                 initialValues={{

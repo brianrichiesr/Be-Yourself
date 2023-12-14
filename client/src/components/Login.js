@@ -1,5 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
+import toast, { Toaster } from "react-hot-toast";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import UserContext from "./User";
@@ -8,6 +10,40 @@ import UserContext from "./User";
 function Login () {
 
     const [loginError, setLoginError] = useState("")
+    const loginWithGoogle = useGoogleLogin({
+        onSuccess: (codeResponse) => {
+            fetch("/login_with_google", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(codeResponse)
+            })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                } else {
+                    toast(res.statusText)
+                    return
+                }
+            })
+            .then(data => {
+                if (!data.access_token) {
+                    setLoginError("Invalid Creditials");
+                    localStorage.clear()
+                    toast("Access Denied");
+                    return
+                }
+                updateUser(data["user"]);
+                localStorage.setItem("access_token", JSON.stringify(data.access_token))
+                localStorage.setItem("refresh_token", JSON.stringify(data.refresh_token))
+                alert("Thank you for being you!");
+                navigate('/posts');
+            })
+            .catch(err => toast(err))
+        },
+        onError: (error) => toast("Error", error)
+    })
 
     const navigate = useNavigate();
 
@@ -28,6 +64,7 @@ function Login () {
             </>
         )
     }
+
     return (
         <div>
             <h2>Login</h2>
@@ -102,6 +139,10 @@ function Login () {
             </Formik>
 
             <div>{loginError}</div>
+            <h2>Login With Google</h2>
+            <br />
+            <br />
+            <button onClick={() => loginWithGoogle()}>Sign In With Google</button>
         </div>
     )
 };

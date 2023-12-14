@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import UserContext from "./User";
@@ -24,7 +25,6 @@ function Submission () {
       });
     
     const submitPost = (values) => {
-      // const updateUser = user_data[0]
       const user = user_data[2]
       values["user_id"] = user["id"]
       console.log("values", values)
@@ -41,13 +41,13 @@ function Submission () {
       .then(data => {
           if (data.errors) {
               setSubmissionError(data.errors);
-              throw (data.errors);
+              toast(data.errors);
+              return
           }
-          console.log("submission -", data)
-          alert("Successful Submission!");
+          toast("Successful Submission!");
       })
       .catch(err => {
-          alert(err)
+          toast(err)
       })
     }
 
@@ -87,21 +87,22 @@ function Submission () {
               return resp.json()
             } else {
               localStorage.clear()
-              alert("Access Has Expired, Please Login Again")
+              toast("Access Has Expired, Please Login Again")
             }
           })
           .then(data => {
             localStorage.setItem("access_token", JSON.stringify(data["access_token"]))
           })
-          .catch(err => alert(err))
+          .catch(err => toast(err))
         }
       })
-      .catch(err => alert(err))
+      .catch(err => toast(err))
       
       }, [])
 
     return (
         <div>
+            <Toaster />
             <h2>Submit A Post</h2>
             <Formik
                 initialValues={{
@@ -111,9 +112,7 @@ function Submission () {
                 }}
                 validationSchema={SubmissionSchema}
                 onSubmit={async (values) => {
-                  // debugger
                     submitPost(values)
-                    // navigate('/main')
                 }}
             >
                 {({errors, touched}) => (
@@ -133,7 +132,6 @@ function Submission () {
                                 id="image"
                                 name="image"
                                 placeholder="john@blaze.com"
-                                // type="text"
                                 autoComplete="off"
                             />
                             {errors.image && touched.image ? (

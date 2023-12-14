@@ -20,7 +20,7 @@ function PostCard() {
                 return (
                     <div key={uuid()}>
                         <p>{item.comment}</p>
-                        <p>{item.user.user_name}</p>
+                        <p>Author: {item.user.user_name} / Id: {item.user.id}</p>
                         <hr />
                     </div>
                 )

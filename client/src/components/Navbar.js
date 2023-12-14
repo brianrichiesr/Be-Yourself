@@ -8,13 +8,15 @@ function Navbar() {
     const admin = value && value[2] ? value[2]['admin'] : ''
     return <>
         <h1>Welcome {user_name || ''}!</h1>
-        {admin ? <Button target={'Users'} /> : null}
-        {user_name ? <Button target={'Posts'} /> : null}
-        {user_name ? null : <Button target={'Signup'} />}
-        {user_name ? null : <Button target={'Login'} />}
-        {user_name ? <Button target={'Submission'} /> : null}
-        {user_name ? <Button target={'Profile'} /> : null}
-        {user_name ? <Button target={'Logout'} /> : null}
+        <div style={{display: "flex", justifyContent: "right"}}>
+            {admin ? <Button target={'Users'} /> : null}
+            {user_name ? <Button target={'Posts'} /> : null}
+            {user_name ? null : <Button target={'Signup'} />}
+            {user_name ? null : <Button target={'Login'} />}
+            {user_name ? <Button target={'Submission'} /> : null}
+            {user_name ? <Button target={'Profile'} /> : null}
+            {user_name ? <Button target={'Logout'} /> : null}
+        </div>
     </>;
 }
 

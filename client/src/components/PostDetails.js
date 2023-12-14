@@ -96,18 +96,19 @@ function PostDetails() {
         .catch(err => alert(err))
         
         }, [])
-
+        console.log(post)
     return <div className="post-details">
         <h2>Post Details</h2>
         <img src={post.image} alt="post image" />
-        <h2>Honoring: {post.honoree["user_name"]}</h2>
+        <h2>Honoring: {post.honoree["user_name"]} / Id: {post.honoree["id"]}</h2>
         <h2>{post.description}</h2>
+        <h3>Author: {post.post_author.user_name} / Id: {post.post_author.id}</h3>
         <h3>Comments:</h3>
         {post.comments.map(item => {
             return (
                 <div key={uuid()}>
                     <p>{item.comment}</p>
-                    <p>{item.user.user_name}</p>
+                    <p>Author: {item.user.user_name} / Id: {item.user.id}</p>
                     <hr />
                 </div>
             )

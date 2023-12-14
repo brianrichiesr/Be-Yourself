@@ -18,7 +18,7 @@ class Post(db.Model, SerializerMixin):
     honoree_id = db.Column(db.Integer, nullable=False)
 
     # Relationships
-    comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
+    comments = db.relationship('Comment', back_populates='post', order_by="desc(Comment.created_at)", cascade='all, delete-orphan')
     comment_authors = association_proxy('comments', 'user')
     post_author = db.relationship('User', back_populates='posts_authored')
 

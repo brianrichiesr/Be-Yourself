@@ -27,6 +27,7 @@ function Button({ target }) {
 
     return (
         <Link
+        className="navLink"
         onClick={() => sendUser()}
         to={target === "Logout" ? "/" :(target ? labels[target] : "")}
         >

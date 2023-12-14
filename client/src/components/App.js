@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import UserContext from "./User";
@@ -58,6 +59,7 @@ function App() {
         setUser(data["user"])
       }
     })
+    .catch(err => toast(err))
   }, [])
 
   const clickMe = (obj) => {
@@ -69,6 +71,7 @@ function App() {
       <UserContext.Provider value={[clickMe, "This is how useContext works!", user]}>
         <Navbar />
       <h1>{user.admin ? "Admin Header" : "App Header"}</h1>
+      <Toaster />
       <Outlet />
       <Footer />
       </UserContext.Provider>
