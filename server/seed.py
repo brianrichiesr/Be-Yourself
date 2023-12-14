@@ -104,7 +104,7 @@ def create_user_connections(users):
     # Empty list
     u_cs = []
     # Iterate 8 times
-    for _ in range(8):
+    for _ in range(15):
         # Assign fake data to variables
         sender_id=rc([user.id for user in users])
         receiver_id=rc([user.id for user in users])

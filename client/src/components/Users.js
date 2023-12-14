@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PostContext from "./Post";
-import PostCard from "./PostCard";
+import UserContext from "./User";
+import UserCard from "./UserCard";
 import { v4 as uuid } from 'uuid'
 
-function Posts() {
+function Users() {
 
-  const [posts, setPosts] = useState([])
+  const [users, setUsers] = useState([])
   const navigate = useNavigate()
 
-  // const value = useContext(PostContext)
+  const adminUser = useContext(UserContext)
 
   const checkToken = (acc_token) => fetch("/check_token", {
     headers: {
@@ -26,12 +26,12 @@ function Posts() {
     })
   }
 
-  const get_posts = (post_token) => {
-    fetch('/posts', {
+  const get_users = (user_token) => {
+    fetch('/users', {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${post_token}`
+        "Authorization": `Bearer ${user_token}`
       }
     })
     .then(res => {
@@ -40,9 +40,9 @@ function Posts() {
       }
     })
     .then(data => {
-      if (data) {
-        setPosts(data)
-      }
+        if (data) {
+            setUsers(data)
+        }
     })
     .catch(err => alert(err))
   }
@@ -54,6 +54,7 @@ function Posts() {
       navigate('/')
       return
     }
+    
     const refresh_token = JSON.parse(localStorage.getItem('refresh_token'))
     checkToken(token)
 
@@ -73,33 +74,37 @@ function Posts() {
         })
         .then(data => {
           localStorage.setItem("access_token", JSON.stringify(data["access_token"]))
-          get_posts(data["access_token"])
+          get_users(data["access_token"])
         })
         .catch(err => alert(err))
       }
     })
     .then(data => {
       if (data) {
-        get_posts(token)
+        get_users(token)
       }
     })
     .catch(err => alert(err))
     
     }, [])
 
-  return (
-    <>
-      <h2>Posts</h2>
-        <div>{posts.map((item, idx) => {
-          return (
-            <PostContext.Provider key={uuid()} value={item}>
-              <PostCard />
-            </PostContext.Provider>
-          )
+    if (!adminUser[2] || !adminUser[2].admin) {
+        return <h1>You are not authorized to view this page!</h1>
+    }
 
-        })}</div>
-    </>
-  );
+    return (
+        <>
+            <h2>Users</h2>
+            <div>{users.map((item, idx) => {
+                return (
+                // <UserContext.Provider>
+                    <UserCard  key={uuid()} user={item} />
+                // </UserContext.Provider>
+                )
+
+            })}</div>
+        </>
+    );
 }
 
-export default Posts;
+export default Users;

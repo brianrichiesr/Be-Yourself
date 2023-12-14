@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import UserContext from "./User";
@@ -7,11 +8,11 @@ import UserContext from "./User";
 
 function App() {
 
-  const demo = {
+  const default_user = {
     user_name: "",
     id: 0
   }
-  const [user, setUser] = useState(demo)
+  const [user, setUser] = useState(default_user)
   const navigate = useNavigate()
   
 
@@ -58,6 +59,7 @@ function App() {
         setUser(data["user"])
       }
     })
+    .catch(err => toast(err))
   }, [])
 
   const clickMe = (obj) => {
@@ -68,7 +70,8 @@ function App() {
     <div>
       <UserContext.Provider value={[clickMe, "This is how useContext works!", user]}>
         <Navbar />
-      <h1>App Header</h1>
+      <h1>{user.admin ? "Admin Header" : "App Header"}</h1>
+      <Toaster />
       <Outlet />
       <Footer />
       </UserContext.Provider>

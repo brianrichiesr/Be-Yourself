@@ -56,7 +56,7 @@ class User(db.Model, SerializerMixin):
     posts_authored = db.relationship('Post', back_populates='post_author', cascade='all, delete-orphan')
 
     # Serialization
-    serialize_only = ('user_name', 'email', 'id')
+    serialize_only = ('user_name', 'email', 'id', 'admin')
 
     # Properties
     @hybrid_property

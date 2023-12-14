@@ -10,6 +10,7 @@
 // import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import "./index.css"
 import App from "./components/App";
@@ -20,6 +21,9 @@ import Posts from "./components/Posts";
 import Submission from "./components/Submission";
 import Login from "./components/Login";
 import PostDetails from "./components/PostDetails";
+import Profile from "./components/Profile";
+import Users from "./components/Users";
+import UserDetails from "./components/UserDetails";
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
@@ -50,15 +54,27 @@ const router = createBrowserRouter([
         element: <PostDetails />
       }, 
       {
+        path: "/users",
+        element: <Users />
+      }, 
+      {
+        path: "/users/:id",
+        element: <UserDetails />
+      },, 
+      {
         path: "/submission",
         element: <Submission />
+      }, 
+      {
+        path: "/profile",
+        element: <Profile />
       }
     ]
   }
 ])
 
 root.render(
-    // <StrictMode>
+    <GoogleOAuthProvider clientId="903461986623-6emgm0cv22cj1ud71lbihntvqoa7b3r3.apps.googleusercontent.com">
         <RouterProvider router={router} />
-    // </StrictMode>
+    </GoogleOAuthProvider>
 );

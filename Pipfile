@@ -16,6 +16,7 @@ faker = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
 python-dotenv = "*"
+requests = "*"
 
 [requires]
 python_full_version = "3.8.13"

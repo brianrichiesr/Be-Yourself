@@ -3,12 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { v4 as uuid } from 'uuid';
 
 function PostDetails() {
-// comments: [{…}, {…}, {…}, {…}, {…}]
-// description: "Service certainly identify firm product. Friend network bank figure apply stop subject."
-// id: 14
-// image: "https://dummyimage.com/751x687"
-// post_author: {email: 'vbaxter@example.net', id: 8, user_name: 'Jeffrey Guerrero'}
-// status: "pending"
 
     const postObj = {
         comments: [],
@@ -31,8 +25,8 @@ function PostDetails() {
     const [post, setPost] = useState(postObj)
     const { id } = useParams()
     const navigate = useNavigate()
-    
-    useEffect(() => {
+
+    const get_post = () => {
         fetch(`/posts/${id}`)
         .then(res => {
             if (res.ok) {
@@ -46,20 +40,75 @@ function PostDetails() {
             alert(err)
             navigate('/')
         })
-    }, [])
+    }
 
+    const checkToken = (acc_token) => fetch("/check_token", {
+        headers: {
+          "Authorization": `Bearer ${acc_token}`
+        }
+      })
+    
+      const postRefreshToken = (ref_token) => {
+        return fetch("/refresh", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${ref_token}`
+          }
+        })
+      }
+      
+      useEffect(() => {
+        const token = JSON.parse(localStorage.getItem('access_token'))
+        if (!token) {
+            localStorage.clear()
+            navigate('/')
+            return
+          }
+        const refresh_token = JSON.parse(localStorage.getItem('refresh_token'))
+        checkToken(token)
+    
+        checkToken(token)
+        .then(res => {
+          if (res.ok) {
+            return res.json()
+          } else if (res.status === 401) {
+            postRefreshToken(refresh_token)
+            .then(resp => {
+              if (resp.ok) {
+                return resp.json()
+              } else {
+                localStorage.clear()
+                alert("Access Has Expired, Please Login Again")
+              }
+            })
+            .then(data => {
+              localStorage.setItem("access_token", JSON.stringify(data["access_token"]))
+              get_post()
+            })
+            .catch(err => alert(err))
+          }
+        })
+        .then(data => {
+          if (data) {
+            get_post()
+          }
+        })
+        .catch(err => alert(err))
+        
+        }, [])
+        console.log(post)
     return <div className="post-details">
-        <div>Post Details</div>
-        <h2>Post # {post.id}</h2>
+        <h2>Post Details</h2>
         <img src={post.image} alt="post image" />
-        <h2>Honoring: {post.honoree["user_name"]}</h2>
+        <h2>Honoring: {post.honoree["user_name"]} / Id: {post.honoree["id"]}</h2>
         <h2>{post.description}</h2>
+        <h3>Author: {post.post_author.user_name} / Id: {post.post_author.id}</h3>
         <h3>Comments:</h3>
         {post.comments.map(item => {
             return (
                 <div key={uuid()}>
                     <p>{item.comment}</p>
-                    <p>{item.user.user_name}</p>
+                    <p>Author: {item.user.user_name} / Id: {item.user.id}</p>
                     <hr />
                 </div>
             )

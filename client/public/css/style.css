@@ -1,0 +1,14 @@
+
+.navLink {
+    height: 35px;
+    width: 100px;
+    margin: 5px;
+    text-decoration: none;
+    color: #eee;
+    background-color: #000;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
