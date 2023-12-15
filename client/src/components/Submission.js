@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { checkToken, postRefreshToken} from "./Authorize";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import UserContext from "./User";
@@ -27,7 +28,6 @@ function Submission () {
     const submitPost = (values) => {
       const user = user_data[2]
       values["user_id"] = user["id"]
-      console.log("values", values)
       fetch("/posts", {
         method: "POST",
         headers: {
@@ -48,21 +48,6 @@ function Submission () {
       })
       .catch(err => {
           toast(err)
-      })
-    }
-
-    const checkToken = (acc_token) => fetch("/check_token", {
-      headers: {
-        "Authorization": `Bearer ${acc_token}`
-      }
-    })
-  
-    const postRefreshToken = (ref_token) => {
-      return fetch("/refresh", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${ref_token}`
-        }
       })
     }
     

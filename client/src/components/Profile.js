@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast"
+import toast, { Toaster } from "react-hot-toast";
+import { checkToken, postRefreshToken} from "./Authorize";
 import UserContext from "./User";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
@@ -23,21 +24,7 @@ function Profile() {
     });
     const user_name = user.user_name || ""
     const email = user.email || ""
-    const id = user.id || 0
-    const checkToken = (acc_token) => fetch("/check_token", {
-        headers: {
-          "Authorization": `Bearer ${acc_token}`
-        }
-      })
-    
-    const postRefreshToken = (ref_token) => {
-        return fetch("/refresh", {
-            method: "POST",
-            headers: {
-            "Authorization": `Bearer ${ref_token}`
-            }
-        })
-    }
+    const id = user.id || 0;
 
     const deleteProfile = () => {
         const confirm = prompt("Are you sure you want to delete your profile? (y)es or (n)o?")
@@ -54,7 +41,7 @@ function Profile() {
             navigate('/')
         })
         } else {
-        console.log("No changes made")
+            toast("No changes made")
         }
     }
 
@@ -78,12 +65,11 @@ function Profile() {
                     return
                 }
                 updateUser(data["user"]);
-                console.log("data = ", data)
                 localStorage.setItem("access_token", JSON.stringify(data.access_token))
-                alert("Your account has been updated!");
+                toast("Your account has been updated!");
             })
             .catch(err => {
-                alert(err)
+                toast(err)
             })
         }
     }
@@ -98,7 +84,7 @@ function Profile() {
                 return
             }
         })
-        .catch(err => alert(err))
+        .catch(err => toast(err))
     }
       
     useEffect(() => {

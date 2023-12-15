@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import UserContext from "./User";
@@ -28,6 +29,7 @@ function Signup () {
 
     return (
         <div>
+            <Toaster />
             <h2>Sign Up</h2>
             <Formik
                 initialValues={{
@@ -53,13 +55,12 @@ function Signup () {
                             throw (data.errors);
                         }
                         updateUser(data["user"]);
-                        console.log("data = ", data)
                         localStorage.setItem("access_token", JSON.stringify(data.access_token))
-                        alert("Thank you for being you!");
+                        toast("Thank you for being you!");
                         navigate('/posts');
                     })
                     .catch(err => {
-                        alert(err)
+                        toast(err)
                     })
                     // navigate('/main')
                 }}
