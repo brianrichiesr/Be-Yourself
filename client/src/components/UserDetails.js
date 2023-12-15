@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { checkToken, postRefreshToken} from "./Authorize";
 import UserContext from "./User";
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
@@ -25,20 +27,6 @@ function UserDetails() {
     const user_name = user.user_name || ""
     const email = user.email || ""
     const { id } = useParams()
-    const checkToken = (acc_token) => fetch("/check_token", {
-        headers: {
-          "Authorization": `Bearer ${acc_token}`
-        }
-      })
-    
-    const postRefreshToken = (ref_token) => {
-        return fetch("/refresh", {
-            method: "POST",
-            headers: {
-            "Authorization": `Bearer ${ref_token}`
-            }
-        })
-    }
 
     const deleteProfile = () => {
         const confirm = prompt("Are you sure you want to delete this profile? (y)es or (n)o?")
@@ -50,14 +38,13 @@ function UserDetails() {
             navigate('/user')
         })
         } else {
-        console.log("No changes made")
+            toast("No changes made")
         }
     }
 
     const updateProfile = (values) => {
         const confirm = prompt("Are you sure you want to update this profile? (y)es or (n)o?")
         if (confirm.toLowerCase() === "y" || confirm.toLowerCase() === "yes") {
-            console.log("update", values.admin)
             fetch(`/users/${id}`, {
                 method: "PATCH",
                 headers: {
@@ -72,14 +59,12 @@ function UserDetails() {
                 if (data.errors) {
                     setUpdateError(data.errors);
                     throw (data.errors);
+                    return
                 }
-                // updateUser(data["user"]);
-                // localStorage.setItem("access_token", JSON.stringify(data.access_token))
-                console.log("data = ", data)
-                alert("This account has been updated!");
+                toast("This account has been updated!");
             })
             .catch(err => {
-                alert(err)
+                toast(err)
             })
         }
     }
@@ -94,10 +79,9 @@ function UserDetails() {
             }
         })
         .then(data => {
-            console.log("user admin", data.admin)
             setUser(data)
         })
-        .catch(err => alert(err))
+        .catch(err => toast(err))
     }
       
     useEffect(() => {
@@ -121,14 +105,14 @@ function UserDetails() {
                 return resp.json()
                 } else {
                 localStorage.clear()
-                alert("Access Has Expired, Please Login Again")
+                toast("Access Has Expired, Please Login Again")
                 }
             })
             .then(data => {
                 localStorage.setItem("access_token", JSON.stringify(data["access_token"]))
                 get_user(id)
             })
-            .catch(err => alert(err))
+            .catch(err => toast(err))
             }
         })
         .then(data => {
@@ -136,21 +120,20 @@ function UserDetails() {
                 get_user(id)
             } 
         })
-        .catch(err => alert(err))
+        .catch(err => toast(err))
         
     }, [])
     const toggleChecked = (e) => {
         const temp_user = {...user}
         temp_user.admin = !temp_user.admin
         setUser(temp_user)
-        console.log("e", e.target)
     }
-    if (!adminUser[2] || !adminUser[2].admin) {
+    if (!adminUser && !adminUser.admin) {
         return <h1>You are not authorized to view this page!</h1>
     }
     return (
         <div>
-            <h2>User: {user.user_name}</h2>
+            <h2>User: {user.user_name} / Id: {id}</h2>
             <Formik
                 initialValues={{
                 user_name: '',

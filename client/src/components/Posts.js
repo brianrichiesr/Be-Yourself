@@ -1,5 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { checkToken, postRefreshToken} from "./Authorize";
 import PostContext from "./Post";
 import PostCard from "./PostCard";
 import { v4 as uuid } from 'uuid'
@@ -8,23 +10,6 @@ function Posts() {
 
   const [posts, setPosts] = useState([])
   const navigate = useNavigate()
-
-  // const value = useContext(PostContext)
-
-  const checkToken = (acc_token) => fetch("/check_token", {
-    headers: {
-      "Authorization": `Bearer ${acc_token}`
-    }
-  })
-
-  const postRefreshToken = (ref_token) => {
-    return fetch("/refresh", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${ref_token}`
-      }
-    })
-  }
 
   const get_posts = (post_token) => {
     fetch('/posts', {
@@ -44,7 +29,7 @@ function Posts() {
         setPosts(data)
       }
     })
-    .catch(err => alert(err))
+    .catch(err => toast(err))
   }
   
   useEffect(() => {
@@ -68,14 +53,14 @@ function Posts() {
             return resp.json()
           } else {
             localStorage.clear()
-            alert("Access Has Expired, Please Login Again")
+            toast("Access Has Expired, Please Login Again")
           }
         })
         .then(data => {
           localStorage.setItem("access_token", JSON.stringify(data["access_token"]))
           get_posts(data["access_token"])
         })
-        .catch(err => alert(err))
+        .catch(err => toast(err))
       }
     })
     .then(data => {
@@ -83,12 +68,13 @@ function Posts() {
         get_posts(token)
       }
     })
-    .catch(err => alert(err))
+    .catch(err => toast(err))
     
     }, [])
 
   return (
     <>
+      <Toaster />
       <h2>Posts</h2>
         <div>{posts.map((item, idx) => {
           return (

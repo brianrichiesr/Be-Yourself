@@ -1,35 +1,29 @@
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import UserContext from "./User";
 
 function Button({ target }) {
-    const navigate = useNavigate()
-    const labels = {
-        "Login": "login",
-        "Posts": "posts",
-        "Profile": "profile",
-        "Signup": "signup",
-        "Submission": "submission",
-        "Users": "users"
-    }
-    const value = useContext(UserContext)
-    const sendUser = () => {
+    /* Grab 'UserContext' */
+    const value = useContext(UserContext);
+    /* Function that will log user out, reset user state, and clear localStorage */
+    const logout = () => {
         if (target === "Logout") {
             const updateUser = value[0]
             updateUser({
                 user_name: "",
                 id: 0
-            })
-            localStorage.clear()
+            });
+            localStorage.clear();
         }
     }
+    /* Assign prop value to variable in lowercase to be used in 'Link' component */
+    const linkTo = target.toLowerCase();
 
     return (
         <Link
         className="navLink"
-        onClick={() => sendUser()}
-        to={target === "Logout" ? "/" :(target ? labels[target] : "")}
+        onClick={() => logout()}
+        to={target === "Logout" ? "/" :(target ? linkTo : "")}
         >
             {target}
         </Link>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { checkToken, postRefreshToken} from "./Authorize";
 import { v4 as uuid } from 'uuid';
 
 function PostDetails() {
@@ -37,25 +39,10 @@ function PostDetails() {
         })
         .then(data => setPost(data))
         .catch(err => {
-            alert(err)
+            toast(err)
             navigate('/')
         })
     }
-
-    const checkToken = (acc_token) => fetch("/check_token", {
-        headers: {
-          "Authorization": `Bearer ${acc_token}`
-        }
-      })
-    
-      const postRefreshToken = (ref_token) => {
-        return fetch("/refresh", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${ref_token}`
-          }
-        })
-      }
       
       useEffect(() => {
         const token = JSON.parse(localStorage.getItem('access_token'))
@@ -78,14 +65,14 @@ function PostDetails() {
                 return resp.json()
               } else {
                 localStorage.clear()
-                alert("Access Has Expired, Please Login Again")
+                toast("Access Has Expired, Please Login Again")
               }
             })
             .then(data => {
               localStorage.setItem("access_token", JSON.stringify(data["access_token"]))
               get_post()
             })
-            .catch(err => alert(err))
+            .catch(err => toast(err))
           }
         })
         .then(data => {
@@ -93,27 +80,29 @@ function PostDetails() {
             get_post()
           }
         })
-        .catch(err => alert(err))
+        .catch(err => toast(err))
         
         }, [])
-        console.log(post)
-    return <div className="post-details">
-        <h2>Post Details</h2>
-        <img src={post.image} alt="post image" />
-        <h2>Honoring: {post.honoree["user_name"]} / Id: {post.honoree["id"]}</h2>
-        <h2>{post.description}</h2>
-        <h3>Author: {post.post_author.user_name} / Id: {post.post_author.id}</h3>
-        <h3>Comments:</h3>
-        {post.comments.map(item => {
-            return (
-                <div key={uuid()}>
-                    <p>{item.comment}</p>
-                    <p>Author: {item.user.user_name} / Id: {item.user.id}</p>
-                    <hr />
-                </div>
-            )
-        })}
-    </div>;
+    return (
+        <div className="post-details">
+            <Toaster />
+            <h2>Post Details</h2>
+            <img src={post.image} alt="post image" />
+            <h2>Honoring: {post.honoree["user_name"]} / Id: {post.honoree["id"]}</h2>
+            <h2>{post.description}</h2>
+            <h3>Author: {post.post_author.user_name} / Id: {post.post_author.id}</h3>
+            <h3>Comments:</h3>
+            {post.comments.map(item => {
+                return (
+                    <div key={uuid()}>
+                        <p>{item.comment}</p>
+                        <p>Author: {item.user.user_name} / Id: {item.user.id}</p>
+                        <hr />
+                    </div>
+                )
+            })}
+        </div>
+    );
 }
 
 export default PostDetails;

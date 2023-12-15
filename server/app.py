@@ -54,6 +54,50 @@ def convert_sql(sq_list):
     # Return list of dicts
     return r_list
 
+def get_pending_sent(user):
+    pending_sent = []
+    for connect in list(user.pending_sent_connections):
+        connect_obj = {
+            "id": connect.id,
+            "user_name": connect.user_name,
+
+        }
+        pending_sent.append(connect_obj)
+    return pending_sent
+
+def get_pending_received(user):
+    pending_received = []
+    for connect in list(user.pending_received_connections):
+        connect_obj = {
+            "id": connect.id,
+            "user_name": connect.user_name,
+
+        }
+        pending_received.append(connect_obj)
+    return pending_received
+
+def get_accepted_sent(user):
+    accepted_sent = []
+    for connect in list(user.accepted_sent_connections):
+        connect_obj = {
+            "id": connect.id,
+            "user_name": connect.user_name,
+
+        }
+        accepted_sent.append(connect_obj)
+    return accepted_sent
+
+def get_accepted_received(user):
+    accepted_received = []
+    for connect in list(user.accepted_received_connections):
+        connect_obj = {
+            "id": connect.id,
+            "user_name": connect.user_name,
+
+        }
+        accepted_received.append(connect_obj)
+    return accepted_received
+
 # Function for to connect to '/' route
 # @app.route('/')
 # def index():
@@ -128,25 +172,17 @@ class UserByID(Resource):
             user = db.session.get(User, id)
             # If a user exists, return user in dict without 'password'
             if user:
-                # Create a connection to the 'user_connections' table
-                connection = sqlite3.connect("instance/app.db")
-                cursor = connection.cursor()
-                # Grab rows from 'user_connections' table where 'id' passed matches the row's 'sender_id' and assign it to variable
-                results = cursor.execute(
-                    '''SELECT * FROM user_connections WHERE sender_id = (?)''',
-                    (id,))
-                # Pass 'results' to helper function and assign to variable
-                response = convert_sql(results)
-                # Grab rows from 'user_connections' table where 'id' passed matches the row's 'sender_id' and assign it to variable
-                results2 = cursor.execute(
-                    '''SELECT * FROM user_connections WHERE receiver_id = (?)''',
-                    (id,))
-                # Pass 'results' to helper function and assign to variable
-                response2 = convert_sql(results2)
-                connection.close()
+                # Use many-to-many relationships to grab connections info
+                pending_sent = get_pending_sent(user)
+                pending_received = get_pending_received(user)
+                accepted_sent = get_accepted_sent(user)
+                accepted_received = get_accepted_received(user)
+                # Convert 'user' to dict and add connections info
                 user = user.to_dict(rules=('-password',))
-                user["connections_sent"] = response
-                user["connections_received"] = response2
+                user["pending_sent"] = pending_sent
+                user["pending_received"] = pending_received
+                user["accepted_sent"] = accepted_sent
+                user["accepted_received"] = accepted_received
                 return make_response(user, 200)
             # Else return error in response object and 404 status
             else:
