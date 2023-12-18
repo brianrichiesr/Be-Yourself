@@ -66,11 +66,9 @@ function App() {
   return (
     <div>
       <UserContext.Provider value={[setUserData, "This is how useContext works!", user]}>
-        <Navbar />
-      <h1>{user.admin ? "Admin Header" : "App Header"}</h1>
+      <Navbar />
       <Toaster />
       <Outlet />
-      <Footer />
       </UserContext.Provider>
     </div>
   );
