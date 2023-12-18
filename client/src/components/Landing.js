@@ -1,7 +1,6 @@
 import React from "react";
 
 function Landing() {
-  localStorage.clear()
   return (
     <div>
       <div id="heroBanner">
