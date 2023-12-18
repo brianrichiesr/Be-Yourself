@@ -9,7 +9,8 @@ import UserContext from "./User";
 
 function Login () {
 
-    const [loginError, setLoginError] = useState("")
+    const [loginError, setLoginError] = useState("");
+    const [reveal, setReveal] = useState("password");
     const loginWithGoogle = useGoogleLogin({
         onSuccess: (codeResponse) => {
             fetch("/api/v1/login_with_google", {
@@ -63,6 +64,16 @@ function Login () {
         )
     }
 
+    const showPassword = reveal => {
+        if (reveal === "password") {
+            setReveal("text")
+            console.log("reveal", reveal)
+        } else {
+            setReveal("password")
+            console.log("reveal", reveal)
+        }
+    };
+
     return (
         <div>
             <Formik
@@ -80,19 +91,25 @@ function Login () {
                         body: JSON.stringify(values)
                     })
                     .then(res => {
-                        return res.json();
+                        if (res.ok) {
+                            return res.json();
+                        } else {
+                            toast(res.statusText);
+                        }
                     })
                     .then(data => {
-                        if (!data.access_token) {
+                        if (!data || !data.access_token) {
                             setLoginError("Invalid Creditials");
                             localStorage.clear()
-                            throw new Error ("Access Denied");
+                            toast("Access Denied");
+                        } else {
+                            updateUser(data["user"]);
+                            localStorage.setItem("access_token", JSON.stringify(data.access_token))
+                            localStorage.setItem("refresh_token", JSON.stringify(data.refresh_token))
+                            toast("Thank you for being you!");
+                            navigate('/posts');
                         }
-                        updateUser(data["user"]);
-                        localStorage.setItem("access_token", JSON.stringify(data.access_token))
-                        localStorage.setItem("refresh_token", JSON.stringify(data.refresh_token))
-                        toast("Thank you for being you!");
-                        navigate('/posts');
+                        
                     })
                     .catch(err => {
                         toast(err)
@@ -125,11 +142,22 @@ function Login () {
                             <Field
                                 id="password"
                                 name="password"
-                                type="password"
+                                type={reveal}
                                 placeholder="password"
                                 autoComplete="off"
                                 className="loginInput"
                             />
+                            <Field
+                                id="reveal"
+                                name="reveal"
+                                type="checkbox"
+                                // checked={user.admin}
+                                autoComplete="off"
+                                onClick={() => showPassword(reveal)}
+                            />
+                            <label htmlFor="reveal">{
+                                reveal === "password" ? "Click To Show Password" : "Unclick To Hide Password"
+                            }</label>
                             {errors.password && touched.password ? (
                                 <span> {errors.password}</span>
                             ) : null}

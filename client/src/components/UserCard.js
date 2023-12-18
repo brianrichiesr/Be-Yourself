@@ -10,6 +10,7 @@ function UserCard({ user }) {
     const displayUser = () => {
         navigate(`/users/${user.id}`)
     }
+    /* Do not return the user's own info */
     if (user.id === admin_user.id) return null
     return <div className="user-card" onClick={displayUser}>
         <h2>Id: {user.id}</h2>

@@ -868,7 +868,7 @@ def login_with_google():
         verified_email = res['verified_email']
         if req.status_code == 200 and verified_email:
             email = res['email']
-            print(f"Google - {email} - {verified_email} - {req.status_code}")
+            print(f"Google - {res}")
             user = User.query.filter_by(email=email).first()
             if user:      
                 refresh_token = create_refresh_token(identity=user.id)
