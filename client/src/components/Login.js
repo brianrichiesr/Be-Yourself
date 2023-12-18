@@ -67,10 +67,8 @@ function Login () {
     const showPassword = reveal => {
         if (reveal === "password") {
             setReveal("text")
-            console.log("reveal", reveal)
         } else {
             setReveal("password")
-            console.log("reveal", reveal)
         }
     };
 

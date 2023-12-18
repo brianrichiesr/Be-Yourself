@@ -29,17 +29,15 @@ function Profile() {
     const deleteProfile = () => {
         const confirm = prompt("Are you sure you want to delete your profile? (y)es or (n)o?")
         if (confirm.toLowerCase() === "y" || confirm.toLowerCase() === "yes") {
-        fetch(`/api/v1/users/${id}`, {
-            method: "DELETE"
-        })
-        .then(() => {
+            fetch(`/api/v1/users/${id}`, {
+                method: "DELETE"
+            })
             updateUser({
                 user_name: "",
                 id: 0
             })
             localStorage.clear()
             navigate('/')
-        })
         } else {
             toast("No changes made")
         }
@@ -197,14 +195,14 @@ function Profile() {
                             className="submitBtn"
                         >Update</button>
 
-                        <button
-                            className="deleteBtn"
-                            onClick={() => deleteProfile()}
-                        >Delete</button>
 
                     </Form>
                 )}
             </Formik>
+            <button
+                className="deleteBtn"
+                onClick={() => deleteProfile()}
+            >Delete</button>
             <div>{updateError}</div>
         </div>
     )
