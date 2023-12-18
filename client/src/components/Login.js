@@ -12,7 +12,7 @@ function Login () {
     const [loginError, setLoginError] = useState("")
     const loginWithGoogle = useGoogleLogin({
         onSuccess: (codeResponse) => {
-            fetch("/login_with_google", {
+            fetch("/api/v1/login_with_google", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -72,7 +72,7 @@ function Login () {
                 }}
                 validationSchema={LoginSchema}
                 onSubmit={async (values) => {
-                    fetch("/user_login", {
+                    fetch("/api/v1/user_login", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -135,17 +135,18 @@ function Login () {
                             ) : null}
                         </div>
 
+                        <div>{loginError}</div>
+
                         <button
                             type="submit"
                             className="submitBtn"
                         >Submit</button>
 
-                        <div>{loginError}</div>
                         <button
+                            type="button"
                             className="loginBtn"
                             onClick={() => loginWithGoogle()}
                         >Sign In With Google</button>   
-
                     </Form>
                 )}
 

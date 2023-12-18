@@ -29,7 +29,7 @@ function PostDetails() {
     const navigate = useNavigate()
 
     const get_post = () => {
-        fetch(`/posts/${id}`)
+        fetch(`/api/v1/posts/${id}`)
         .then(res => {
             if (res.ok) {
                 return res.json()

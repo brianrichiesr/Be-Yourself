@@ -17,7 +17,7 @@ function Button({ target }) {
         }
     }
     /* Assign prop value to variable in lowercase to be used in 'Link' component */
-    const linkTo = target.toLowerCase();
+    const linkTo = `${target.toLowerCase()}`;
 
     return (
         <Link

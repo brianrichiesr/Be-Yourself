@@ -12,7 +12,7 @@ function Posts() {
   const navigate = useNavigate()
 
   const get_posts = (post_token) => {
-    fetch('/posts', {
+    fetch('/api/v1/posts', {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

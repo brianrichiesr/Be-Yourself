@@ -28,7 +28,7 @@ function Submission () {
     const submitPost = (values) => {
       const user = user_data[2]
       values["user_id"] = user["id"]
-      fetch("/posts", {
+      fetch("/api/v1/posts", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -149,15 +149,16 @@ function Submission () {
                             ) : null}
                         </div>
         
+                        <div>{submissionError}</div>
+
                         <button
                           type="submit"
                           className="submitBtn"
                         >Submit</button>
-
+                        
                     </Form>
                 )}
             </Formik>
-            <div>{submissionError}</div>
         </div>
     )
 };
