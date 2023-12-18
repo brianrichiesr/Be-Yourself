@@ -30,7 +30,6 @@ function Signup () {
     return (
         <div>
             <Toaster />
-            <h2>Sign Up</h2>
             <Formik
                 initialValues={{
                 user_name: '',
@@ -66,11 +65,19 @@ function Signup () {
                 }}
             >
                 {({errors, touched}) => (
-                    <Form>
-
+                    <Form
+                        className="loginForm"
+                    >
+                        <h2>Sign Up</h2>
                         <div>
                             <label htmlFor="user_name">User Name</label>
-                            <Field id="user_name" name="user_name" placeholder="John Blaze" autoComplete="off" />
+                            <Field
+                                id="user_name"
+                                name="user_name"
+                                placeholder="John Blaze"
+                                autoComplete="off"
+                                className="loginInput"
+                            />
                             {errors.user_name && touched.user_name ? (
                                 <span> {errors.user_name}</span>
                             ) : null}
@@ -84,6 +91,7 @@ function Signup () {
                                 placeholder="john@blaze.com"
                                 type="email"
                                 autoComplete="off"
+                                className="loginInput"
                             />
                             {errors.email && touched.email ? (
                                 <span> {errors.email}</span>
@@ -92,13 +100,23 @@ function Signup () {
 
                         <div>
                             <label htmlFor="password">Password</label>
-                            <Field id="password" name="password" type="password" placeholder="password" autoComplete="off" />
+                            <Field
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="password"
+                                autoComplete="off"
+                                className="loginInput"
+                            />
                             {errors.password && touched.password ? (
                                 <span> {errors.password}</span>
                             ) : null}
                         </div>
         
-                        <button type="submit">Submit</button>
+                        <button
+                            className="submitBtn"
+                            type="submit"
+                        >Submit</button>
 
                     </Form>
                 )}

@@ -37,7 +37,7 @@ function Login () {
                 updateUser(data["user"]);
                 localStorage.setItem("access_token", JSON.stringify(data.access_token))
                 localStorage.setItem("refresh_token", JSON.stringify(data.refresh_token))
-                alert("Thank you for being you!");
+                toast("Thank you for being you!");
                 navigate('/posts');
             })
             .catch(err => toast(err))
@@ -49,9 +49,7 @@ function Login () {
 
     const LoginSchema = Yup.object().shape({
         password: Yup.string()
-          .min(2, 'Too Short!')
-          .max(50, 'Too Long!')
-          .required('Required'),
+          .required('Password Is Required For Access'),
         email: Yup.string().email('Invalid email').required('Required'),
       });
 
@@ -67,7 +65,6 @@ function Login () {
 
     return (
         <div>
-            <h2>Login</h2>
             <Formik
                 initialValues={{
                 password: '',
@@ -94,18 +91,20 @@ function Login () {
                         updateUser(data["user"]);
                         localStorage.setItem("access_token", JSON.stringify(data.access_token))
                         localStorage.setItem("refresh_token", JSON.stringify(data.refresh_token))
-                        alert("Thank you for being you!");
+                        toast("Thank you for being you!");
                         navigate('/posts');
                     })
                     .catch(err => {
-                        alert(err)
+                        toast(err)
                     })
                 }}
             >
 
                 {({ errors, touched }) => (
-                    <Form>
-
+                    <Form
+                        className="loginForm"
+                    >
+                        <h2>Login</h2>
                         <div>
                             <label htmlFor="email">Email</label>
                             <Field
@@ -114,6 +113,7 @@ function Login () {
                                 placeholder="john@blaze.com"
                                 type="email"
                                 autoComplete="off"
+                                className="loginInput"
                             />
                             {errors.email && touched.email ? (
                                 <span> {errors.email}</span>
@@ -128,21 +128,30 @@ function Login () {
                                 type="password"
                                 placeholder="password"
                                 autoComplete="off"
+                                className="loginInput"
                             />
+                            {errors.password && touched.password ? (
+                                <span> {errors.password}</span>
+                            ) : null}
                         </div>
 
-                        <button type="submit">Submit</button>
+                        <button
+                            type="submit"
+                            className="submitBtn"
+                        >Submit</button>
+
+                        <div>{loginError}</div>
+                        <button
+                            className="loginBtn"
+                            onClick={() => loginWithGoogle()}
+                        >Sign In With Google</button>   
 
                     </Form>
                 )}
 
             </Formik>
 
-            <div>{loginError}</div>
-            <h2>Login With Google</h2>
-            <br />
-            <br />
-            <button onClick={() => loginWithGoogle()}>Sign In With Google</button>
+            
         </div>
     )
 };

@@ -132,7 +132,6 @@ function Profile() {
     return (
         <div>
             <Toaster />
-            <h2>Profile</h2>
             <Formik
                 initialValues={{
                 user_name: '',
@@ -145,14 +144,20 @@ function Profile() {
                 }}
             >
                 {({errors, touched}) => (
-                    <Form>
-
+                    <Form
+                        className="loginForm"
+                    >
+                        <h2>Profile</h2>
                         <div>
                             <label htmlFor="user_name">User Name</label>
-                            <Field id="user_name" name="user_name"
-                            placeholder={user_name}
-                            autoComplete="off" />
-                            {errors.user_name && touched.user_name ? (
+                            <Field
+                                id="user_name"
+                                name="user_name"
+                                placeholder={user_name}
+                                autoComplete="off"
+                                className="loginInput"
+                            />
+                                {errors.user_name && touched.user_name ? (
                                 <span> {errors.user_name}</span>
                             ) : null}
                         </div>
@@ -165,6 +170,7 @@ function Profile() {
                                 placeholder={email}
                                 type="email"
                                 autoComplete="off"
+                                className="loginInput"
                             />
                             {errors.email && touched.email ? (
                                 <span> {errors.email}</span>
@@ -173,18 +179,32 @@ function Profile() {
 
                         <div>
                             <label htmlFor="password">Password</label>
-                            <Field id="password" name="password" type="password" placeholder="password" autoComplete="off" />
+                            <Field
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="password"
+                                autoComplete="off"
+                                className="loginInput"
+                            />
                             {errors.password && touched.password ? (
                                 <span> {errors.password}</span>
                             ) : null}
                         </div>
         
-                        <button type="submit">Update</button>
+                        <button
+                            type="submit"
+                            className="submitBtn"
+                        >Update</button>
+
+                        <button
+                            className="deleteBtn"
+                            onClick={() => deleteProfile()}
+                        >Delete</button>
 
                     </Form>
                 )}
             </Formik>
-            <button onClick={() => deleteProfile()}>Delete</button>
             <div>{updateError}</div>
         </div>
     )

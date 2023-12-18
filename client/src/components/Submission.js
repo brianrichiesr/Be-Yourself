@@ -20,7 +20,7 @@ function Submission () {
           .required('Required'),
         description: Yup.string()
           .min(2, 'Too Short!')
-          .max(500, 'Too Long!')
+          .max(1000, 'Too Long!')
           .required('Required'),
         image: Yup.string(),
       });
@@ -88,7 +88,6 @@ function Submission () {
     return (
         <div>
             <Toaster />
-            <h2>Submit A Post</h2>
             <Formik
                 initialValues={{
                   description: '',
@@ -101,11 +100,20 @@ function Submission () {
                 }}
             >
                 {({errors, touched}) => (
-                    <Form>
-
+                    <Form
+                      className="loginForm"
+                    >
+                        <h2>Submit A Post</h2>
                         <div>
                             <label htmlFor="honoree_id">Honoree Id</label>
-                            <Field id="honoree_id" name="honoree_id" placeholder="" type="number" autoComplete="off" />
+                            <Field
+                              id="honoree_id"
+                              name="honoree_id"
+                              placeholder=""
+                              type="number"
+                              autoComplete="off"
+                              className="loginInput"
+                            />
                             {errors.honoree_id && touched.honoree_id ? (
                                 <span> {errors.honoree_id}</span>
                             ) : null}
@@ -118,6 +126,7 @@ function Submission () {
                                 name="image"
                                 placeholder="john@blaze.com"
                                 autoComplete="off"
+                                className="loginInput"
                             />
                             {errors.image && touched.image ? (
                                 <span> {errors.image}</span>
@@ -126,13 +135,24 @@ function Submission () {
 
                         <div>
                             <label htmlFor="description">Description</label>
-                            <Field as="textarea" id="description" name="description" type="text" placeholder="description" autoComplete="off" />
+                            <Field
+                              as="textarea"
+                              id="description"
+                              name="description"
+                              type="text"
+                              placeholder="description 1000 characters max."
+                              autoComplete="off"
+                              className="loginInput textArea"
+                            />
                             {errors.description && touched.description ? (
                                 <span> {errors.description}</span>
                             ) : null}
                         </div>
         
-                        <button type="submit">Submit</button>
+                        <button
+                          type="submit"
+                          className="submitBtn"
+                        >Submit</button>
 
                     </Form>
                 )}
