@@ -323,6 +323,8 @@ h1 {
 
 .deleteBtn {
   background-color: #d21919;
+  display: flex;
+  align-self: center;
 }
 
 .deleteBtn:hover {

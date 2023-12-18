@@ -149,8 +149,11 @@ class Users(Resource):
             db.session.add(new_user)
             db.session.commit()
             access_token = create_access_token(identity=new_user.id)
+            refresh_token = create_refresh_token(identity=new_user.id)
             response = {"user": new_user.to_dict(rules=('-password',))}
             response['access_token'] = access_token
+            response['refresh_token'] = refresh_token
+            
             # return make_response(response, 200)
             # Return response object without 'password' and 201 status
             return make_response(response, 201)
@@ -215,8 +218,10 @@ class UserByID(Resource):
                 db.session.add(user)
                 db.session.commit()
                 access_token = create_access_token(identity=user.id)
+                refresh_token = create_refresh_token(identity=user.id)
                 response = {"user": user.to_dict(rules=('-password',))}
                 response['access_token'] = access_token
+                response['refresh_token'] = refresh_token
                 # Return response object without 'password' and 200 status
                 return make_response(response, 200)
             else:
@@ -868,7 +873,7 @@ def login_with_google():
         verified_email = res['verified_email']
         if req.status_code == 200 and verified_email:
             email = res['email']
-            print(f"Google - {email} - {verified_email} - {req.status_code}")
+            print(f"Google - {res}")
             user = User.query.filter_by(email=email).first()
             if user:      
                 refresh_token = create_refresh_token(identity=user.id)
@@ -878,11 +883,24 @@ def login_with_google():
                 response['refresh_token'] = refresh_token
                 return make_response(response, 200)
             else:
-                response = {
-                    "access_token": "",
-                    "message": "User not found"
-                }
-                return make_response(response, 401)
+                # Create a new user with 'data' without 'password'
+                new_user = User(
+                    user_name = res["name"],
+                    email = res["email"]
+                )
+                # Assign default 'password' from 'data' to newly created user to utilize encryption capability of 'User'
+                new_user.password = "password"
+                # Add new user to session and commit new user to db table
+                db.session.add(new_user)
+                db.session.commit()
+                access_token = create_access_token(identity=new_user.id)
+                refresh_token = create_refresh_token(identity=new_user.id)
+                response = {"user": new_user.to_dict(rules=('-password',))}
+                response['access_token'] = access_token
+                response['refresh_token'] = refresh_token
+                # return make_response(response, 200)
+                # Return response object without 'password' and 201 status
+                return make_response(response, 201)
         else:
             response = {
                 "access_token": "",
