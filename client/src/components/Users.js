@@ -14,7 +14,7 @@ function Users() {
   const adminUser = useContext(UserContext);
 
   const get_users = (user_token) => {
-    fetch('/users', {
+    fetch('/api/v1/users', {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

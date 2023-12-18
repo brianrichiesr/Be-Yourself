@@ -38,7 +38,7 @@ function Signup () {
                 }}
                 validationSchema={SignupSchema}
                 onSubmit={async (values) => {
-                    fetch("/users", {
+                    fetch("/api/v1/users", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"

@@ -24,7 +24,7 @@ import PostDetails from "./components/PostDetails";
 import Profile from "./components/Profile";
 import Users from "./components/Users";
 import UserDetails from "./components/UserDetails";
-
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 
@@ -74,7 +74,7 @@ const router = createBrowserRouter([
 ])
 
 root.render(
-    <GoogleOAuthProvider clientId="903461986623-6emgm0cv22cj1ud71lbihntvqoa7b3r3.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={clientId}>
         <RouterProvider router={router} />
     </GoogleOAuthProvider>
 );

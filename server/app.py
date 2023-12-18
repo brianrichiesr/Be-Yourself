@@ -162,7 +162,7 @@ class Users(Resource):
                 {"errors": [str(e)]}, 400
             )
 # Add GET and POST functionality to '/users' route
-api.add_resource(Users, '/users')
+api.add_resource(Users, '/api/v1/users')
 
 class UserByID(Resource):
 
@@ -273,7 +273,7 @@ class UserByID(Resource):
                 {"errors": [str(e)]}, 400
             )
 # Add GET, PATCH and DELETE functionality to '/users/<int:id>' route
-api.add_resource(UserByID, '/users/<int:id>')
+api.add_resource(UserByID, '/api/v1/users/<int:id>')
 
 # Restful routes for 'Post' model
 class Posts(Resource):
@@ -334,7 +334,7 @@ class Posts(Resource):
             )
 
 # Add GET and POST functionality to '/posts route
-api.add_resource(Posts, '/posts')
+api.add_resource(Posts, '/api/v1/posts')
 
 class PostByID(Resource):
 
@@ -418,7 +418,7 @@ class PostByID(Resource):
             )
 
 # Add GET, PATCH and DELETE functionality to '/posts/<int:id>' route        
-api.add_resource(PostByID, '/posts/<int:id>')
+api.add_resource(PostByID, '/api/v1/posts/<int:id>')
 
 
 # Restful routes for 'Post' model
@@ -479,7 +479,7 @@ class Comments(Resource):
             )
 
 # Add GET and POST functionality to '/comments route
-api.add_resource(Comments, '/comments')
+api.add_resource(Comments, '/api/v1/comments')
 
 class CommentByID(Resource):
 
@@ -571,10 +571,10 @@ class CommentByID(Resource):
             )
 
 # Add GET, PATCH and DELETE functionality to '/comments/<int:id>' route        
-api.add_resource(CommentByID, '/comments/<int:id>')
+api.add_resource(CommentByID, '/api/v1/comments/<int:id>')
 
 # App routes for 'user_connections' table
-@app.route('/user_connections', methods=['GET', 'POST'])
+@app.route('/api/v1/user_connections', methods=['GET', 'POST'])
 def u_connections():
     # Create a connection to the 'user_connections' table
     connection = sqlite3.connect("instance/app.db")
@@ -635,7 +635,7 @@ def u_connections():
             )
 
 
-@app.route('/user_connections/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
+@app.route('/api/v1/user_connections/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
 def u_connection_by_id(id):
     # Create a connection to the 'user_connections' table
     connection = sqlite3.connect("instance/app.db")
@@ -732,7 +732,7 @@ def u_connection_by_id(id):
             )
 
 
-@app.route('/user_connections_sender/<int:id>', methods=['GET'])
+@app.route('/api/v1/user_connections_sender/<int:id>', methods=['GET'])
 def u_connection_by_sender_id(id):
     # Create a connection to the 'user_connections' table
     connection = sqlite3.connect("instance/app.db")
@@ -767,7 +767,7 @@ def u_connection_by_sender_id(id):
             )
 
 
-@app.route('/user_connections_receiver/<int:id>', methods=['GET'])
+@app.route('/api/v1/user_connections_receiver/<int:id>', methods=['GET'])
 def u_connection_by_receiver_id(id):
      # Create a connection to the 'user_connections' table
     connection = sqlite3.connect("instance/app.db")
@@ -802,7 +802,7 @@ def u_connection_by_receiver_id(id):
             )
 
 
-@app.route('/user_login', methods=["POST"])
+@app.route('/api/v1/user_login', methods=["POST"])
 def login():
     try:
         data = json.loads(request.data)
@@ -830,7 +830,7 @@ def login():
         )
 
 
-@app.route('/check_token')
+@app.route('/api/v1/check_token')
 @jwt_required()
 def check_token():
     user = db.session.get(User, get_jwt_identity())
@@ -842,7 +842,7 @@ def check_token():
     }
     return make_response(response, 403)
 
-@app.route('/refresh', methods=['POST'])
+@app.route('/api/v1/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
     try:
@@ -857,7 +857,7 @@ def refresh():
     except Exception as e:
         return {"message": str(e)}, 400
 
-@app.route('/login_with_google', methods=["POST"])
+@app.route('/api/v1/login_with_google', methods=["POST"])
 def login_with_google():
     try:
         data = json.loads(request.data)

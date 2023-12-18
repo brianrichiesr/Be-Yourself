@@ -29,7 +29,7 @@ function Profile() {
     const deleteProfile = () => {
         const confirm = prompt("Are you sure you want to delete your profile? (y)es or (n)o?")
         if (confirm.toLowerCase() === "y" || confirm.toLowerCase() === "yes") {
-        fetch(`/users/${id}`, {
+        fetch(`/api/v1/users/${id}`, {
             method: "DELETE"
         })
         .then(() => {
@@ -48,7 +48,7 @@ function Profile() {
     const updateProfile = (values) => {
         const confirm = prompt("Are you sure you want to update your profile? (y)es or (n)o?")
         if (confirm.toLowerCase() === "y" || confirm.toLowerCase() === "yes") {
-            fetch(`/users/${id}`, {
+            fetch(`/api/v1/users/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
@@ -75,7 +75,7 @@ function Profile() {
     }
 
     const get_user = (id) => {
-        fetch(`/users/${id}`)
+        fetch(`/api/v1/users/${id}`)
         .then(res => {
             if (res.ok) {
                 return res.json()
