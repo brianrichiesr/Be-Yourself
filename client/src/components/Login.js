@@ -74,6 +74,7 @@ function Login () {
 
     return (
         <div className="formBackgroundDiv">
+            <h2 className="headerH2">Login</h2>
             <div className="loginBox">
             <Toaster />
             <Formik
@@ -121,7 +122,7 @@ function Login () {
                     <Form
                         className="loginForm"
                     >
-                        <h2>Login</h2>
+                        
                         <div>
                             <label htmlFor="email">Email</label>
                             <Field

@@ -70,6 +70,7 @@ function App() {
       <Toaster />
       <Outlet />
       </UserContext.Provider>
+      <Footer />
     </div>
   );
 }

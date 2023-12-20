@@ -29,6 +29,7 @@ function Signup () {
 
     return (
         <div className="formBackgroundDiv">
+            <h2 className="headerH2">Sign Up</h2>
             <div className="loginBox">
             <Toaster />
             <Formik
@@ -69,7 +70,6 @@ function Signup () {
                     <Form
                         className="loginForm"
                     >
-                        <h2>Sign Up</h2>
                         <div>
                             <label htmlFor="user_name">User Name</label>
                             <Field
