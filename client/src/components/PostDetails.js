@@ -172,7 +172,7 @@ function PostDetails() {
                 </div>
             </div>
             <div className="postBox">
-                <h2 className="postBoxH2">Comments:</h2>
+                <h2 className="commentsH2">Comments:</h2>
                 <div className="commentBox">
                     {post.comments.map((item, idx) => {
                         return (

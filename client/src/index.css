@@ -52,10 +52,6 @@ hr {
   color: #eee;
 }
 
-.postBoxH2 {
-  padding-left: 24px;
-}
-
 #appDiv {
   height: 100vh;
 }
@@ -446,7 +442,6 @@ hr {
   align-items: center;
   justify-content: space-around;
   align-self: center;
-  /* padding: 20px 0; */
   background-color: #fff;
 }
 
@@ -462,7 +457,7 @@ hr {
 }
 
 #postCardBox h3 {
-  padding: 10px 0 0;
+  padding-top: 15px;
   border-top: .5px solid #2b2b2d;
   width: 100%;
   text-align: center;
@@ -487,7 +482,10 @@ hr {
 
 .postBoxH2 {
   padding-left: 25px;
-  color: #eee
+}
+
+.postBoxH2, .commentsH2 {
+  color: #eee;
 }
 
 .posts {
@@ -499,7 +497,7 @@ hr {
   /* color: #000; */
 }
 
-.posts:hover, .detailsCard {
+.posts:hover{
   box-shadow: 7px 7px 10px 0 #2b2b2d, 0 0 0 1px #2b2b2d;
 }
 
@@ -509,14 +507,14 @@ hr {
 }
 
 #commentForm {
-  max-height: 13vh;
-  min-height: 13vh;
-  padding: 0 0 15px;
-  width: 100%;
+  max-height: 10vh;
+  min-height: 10vh;
+  padding: 0 0 10px;
 }
 
 #comment {
   padding: 0 5px;
+  margin-top: 7px;
 }
 
 .commentBox {
@@ -529,6 +527,7 @@ hr {
   color: #eee;
   background-color: #000000e6;
   font-size: 18px;
+  margin: 0 38px 0 15px;
 }
 
 #commentDiv {
