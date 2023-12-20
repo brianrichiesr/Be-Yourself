@@ -58,6 +58,10 @@ hr {
   background-size: cover;
 }
 
+#landing {
+  color: #eee;
+}
+
 #navBar {
   display: flex;
   justify-content: space-between;
@@ -247,22 +251,40 @@ hr {
 
 .loginBox {
   width: 40%;
-  margin: 150px auto;
+  margin: 100px auto;
   border-radius: 5px;
   border: 1px solid #d4d4d5;
   background-color: #fff;
+  color: #000;
 }
 
 .loginForm {
   /* width: 100%; */
   /* max-width: 600px; */
   height: 60vh;
-  padding: 50px 10px 0;
+  padding: 25px 10px 0;
   /* margin: 0 auto; */
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+}
+
+.formBox {
+  width: 600px;
+  height: 625px;
+  background-color: #fff;
+  border-radius: 5px;
+  margin: 0 auto;
+  padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: sp;
+}
+
+.formBackgroundDiv {
+  height: 93vh;
+  overflow: hidden;
 }
 
 .loginInput {
@@ -283,10 +305,6 @@ hr {
   max-width: 542px;
   animation-duration: 10ms;
   padding: 16.5px 14px;
-}
-
-.textArea {
-  height: 150px;
 }
 
 .loginBtn, .submitBtn, .deleteBtn {
@@ -468,11 +486,9 @@ hr {
   margin-bottom: 100px;
   border-radius: 5px;
   max-width: 400px;
-}
-
-.posts {
   box-shadow: 0 0 0 0 #2b2b2d, 0 0 0 1px #2b2b2d;
   transition: all .2s linear;
+  /* color: #000; */
 }
 
 .posts:hover, .detailsCard {

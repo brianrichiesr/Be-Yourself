@@ -88,9 +88,10 @@ function Submission () {
       }, [])
 
     return (
-        <div>
+        <div className="formBackgroundDiv">
             <Toaster />
             <h2 className="headerH2">Submit A Post</h2>
+            <div className="formBox">
             <Formik
                 initialValues={{
                   description: '',
@@ -161,6 +162,7 @@ function Submission () {
                     </Form>
                 )}
             </Formik>
+            </div>
         </div>
     )
 };

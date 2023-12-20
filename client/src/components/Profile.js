@@ -128,9 +128,10 @@ function Profile() {
         
     }, [])
     return (
-        <div>
+        <div className="formBackgroundDiv">
             <Toaster />
             <h2 className="headerH2">Profile</h2>
+            <div className="formBox">
             <Formik
                 initialValues={{
                 user_name: '',
@@ -202,8 +203,9 @@ function Profile() {
             <button
                 className="deleteBtn"
                 onClick={() => deleteProfile()}
-            >Delete</button>
+                >Delete</button>
             <div>{updateError}</div>
+            </div>
         </div>
     )
 };

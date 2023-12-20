@@ -96,7 +96,8 @@ function PostDetails() {
     });
 
     return (
-        <div id="post-details">
+        <div className="formBackgroundDiv">
+            <div id="post-details">
             <Toaster />
             <div className="postBox">
                 <h2 className="postBoxH2">Post Details</h2>
@@ -185,6 +186,7 @@ function PostDetails() {
                 </div>
                 
             </div>
+        </div>
         </div>
     );
 }
