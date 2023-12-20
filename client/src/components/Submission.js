@@ -20,7 +20,7 @@ function Submission () {
           .required('Required'),
         description: Yup.string()
           .min(2, 'Too Short!')
-          .max(250, 'Too Long!')
+          .max(200, 'Too Long!')
           .required('Required'),
         image: Yup.string(),
       });
@@ -143,7 +143,7 @@ function Submission () {
                               id="description"
                               name="description"
                               type="text"
-                              placeholder="description 250 characters max."
+                              placeholder="description 200 characters max."
                               autoComplete="off"
                               className="loginInput textArea"
                             />
