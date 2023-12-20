@@ -10,24 +10,17 @@ function PostCard() {
     const displayPost = () => {
         navigate(`/posts/${value.id}`)
     }
-    return <div className="post-card" onClick={displayPost}>
-        <img src={value.image} alt="post image" />
-        <h2>Honoring: {value.honoree["user_name"]} / Id: {value.honoree["id"]}</h2>
-        <h2>{description}</h2>
-        <h3>Comments:</h3>
-        {value.comments.map((item, idx) => {
-            if (idx < 3) {
-                return (
-                    <div key={uuid()}>
-                        <p>{item.comment}</p>
-                        <p>Author: {item.user.user_name} / Id: {item.user.id}</p>
-                        <hr />
-                    </div>
-                )
-            }
-            return null
-        })}
-    </div>;
+    return (
+        <div className="postBox posts" onClick={displayPost}>
+            <div id="postCardBox">
+                <h2>Honoring: {value.honoree["user_name"]} / Id: {value.honoree["id"]}</h2>
+                <img src={value.image} alt="post image" />
+                <p>{value.description}</p>
+                <h3>Author: {value.post_author.user_name} / Id: {value.post_author.id}</h3>
+                <h4>Comments: {value.comments.length}</h4>
+            </div>
+        </div>
+    )
 }
 
 export default PostCard;

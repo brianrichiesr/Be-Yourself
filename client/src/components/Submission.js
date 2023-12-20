@@ -20,7 +20,7 @@ function Submission () {
           .required('Required'),
         description: Yup.string()
           .min(2, 'Too Short!')
-          .max(1000, 'Too Long!')
+          .max(250, 'Too Long!')
           .required('Required'),
         image: Yup.string(),
       });
@@ -45,6 +45,8 @@ function Submission () {
               return
           }
           toast("Successful Submission!");
+          navigate('/posts')
+
       })
       .catch(err => {
           toast(err)
@@ -86,8 +88,10 @@ function Submission () {
       }, [])
 
     return (
-        <div>
+        <div className="formBackgroundDiv">
             <Toaster />
+            <h2 className="headerH2">Submit A Post</h2>
+            <div className="formBox">
             <Formik
                 initialValues={{
                   description: '',
@@ -103,7 +107,6 @@ function Submission () {
                     <Form
                       className="loginForm"
                     >
-                        <h2>Submit A Post</h2>
                         <div>
                             <label htmlFor="honoree_id">Honoree Id</label>
                             <Field
@@ -140,7 +143,7 @@ function Submission () {
                               id="description"
                               name="description"
                               type="text"
-                              placeholder="description 1000 characters max."
+                              placeholder="description 250 characters max."
                               autoComplete="off"
                               className="loginInput textArea"
                             />
@@ -159,6 +162,7 @@ function Submission () {
                     </Form>
                 )}
             </Formik>
+            </div>
         </div>
     )
 };

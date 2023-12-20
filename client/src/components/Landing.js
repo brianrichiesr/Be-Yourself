@@ -2,7 +2,7 @@ import React from "react";
 
 function Landing() {
   return (
-    <div>
+    <div id="landing">
       <div id="heroBanner">
         <div className="heroDiv"><span className="altColorOne">Be</span>lieve In</div>
         <div className="heroDiv alignRight"><span className="altColorTwo">You</span>rself</div>

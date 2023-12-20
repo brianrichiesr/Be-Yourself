@@ -452,13 +452,13 @@ class Comments(Resource):
             # Convert data from request body to json object
             data = json.loads(request.data)
             # Check to see if the post the comment is to be connected to exists, if not return error in response object and 404 status
-            post = db.session.get('Post', data['post_id'])
+            post = db.session.get(Post, data['post_id'])
             if not post:
                 return make_response(
                     {"errors": "Post not found"}, 404
                 )
             # Check to see if the user the comment is to be connected to exists, if not return error in response object and 404 status
-            user = db.session.get('User', data['user_id'])
+            user = db.session.get(User, data['user_id'])
             if not user:
                 return make_response(
                     {"errors": "User not found"}, 404
@@ -473,8 +473,11 @@ class Comments(Resource):
             # Add new comment to session and commit new user to db table
             db.session.add(new_comment)
             db.session.commit()
+            honoree = db.session.get(User, post.honoree_id)
+            response = post.to_dict()
+            response["honoree"] = honoree.to_dict()
             # Return response object and 201 status
-            return make_response(new_comment.to_dict(), 201)
+            return make_response(response, 201)
         # If functionality in try fails, raise error and 400 status
         except (ValueError, AttributeError, TypeError) as e:
             # Remove staged changes

@@ -64,7 +64,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div id="appDiv">
       <UserContext.Provider value={[setUserData, "This is how useContext works!", user]}>
       <Navbar />
       <Toaster />

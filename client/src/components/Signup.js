@@ -28,7 +28,8 @@ function Signup () {
       });
 
     return (
-        <div>
+        <div className="formBackgroundDiv">
+            <div className="loginBox">
             <Toaster />
             <Formik
                 initialValues={{
@@ -122,6 +123,7 @@ function Signup () {
                 )}
             </Formik>
             <div>{signupError}</div>
+        </div>
         </div>
     )
 };
