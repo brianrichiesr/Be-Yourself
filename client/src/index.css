@@ -277,7 +277,29 @@ hr {
   padding-bottom: 50px;
   display: flex;
   flex-direction: column;
-  justify-content: sp;
+}
+
+#profileContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.profileBoxRight {
+  margin: 0 0 0 65px;
+}
+
+.profileBoxLeft {
+  margin: 0 65px 0 0;
+}
+
+#connectionsDiv {
+  height: 375px;
+  overflow-y: auto;
+  margin-bottom: 50px;
+}
+
+#receiver_id {
+  padding: 5px;
 }
 
 .formBackgroundDiv {

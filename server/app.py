@@ -285,8 +285,6 @@ class Posts(Resource):
     @jwt_required()
     def get(self):
         try:
-            # current_user = get_jwt_identity()
-            # print(f"Current - {current_user}")
             # Create empty list
             p_list = []
             # Query 'Post' table and assign all posts to variable
@@ -616,22 +614,53 @@ def u_connections():
             sender_id = data["sender_id"]
             receiver_id = data["receiver_id"]
             reason = data["reason"]
-            # Create new row in 'user_connections' with values from 'data' and assign connection to table in variable
-            result = cursor.execute(
-                '''INSERT INTO user_connections (sender_id, receiver_id, reason) VALUES (?, ?, ?)''',
-                (sender_id, receiver_id, reason))
-            # Commit the new row to table
-            connection.commit()
-            # Select newly created row by id using .lastrowid method of 'result' (Research better way to return the newly created row with its id)
-            new_posts = cursor.execute(
-                '''SELECT * FROM user_connections WHERE id = (?)''',
-            (result.lastrowid,))
-            # Pass new row to helper function
-            response = convert_sql(new_posts)
-            # Close connection
-            connection.close()
-            # Return response object and 200 status
-            return make_response(response, 200)
+            user = db.session.get(User, receiver_id)
+            if not user:
+                return make_response({
+                "Message": "User Not Found"
+            }, 200)
+            # Check if user is trying to connect with self
+            if sender_id == receiver_id:
+                return make_response({
+                    "Message": "Cannot Request Yourself"
+                }, 200)
+
+            # Check for existing connection
+            check_existing = cursor.execute(
+                '''SELECT * FROM user_connections WHERE sender_id = (?) AND receiver_id = (?)''',
+                (sender_id, receiver_id))
+            existing = convert_sql(check_existing)
+            if existing:
+                return make_response({
+                    "Message": "Request already exists"
+                }, 200)
+            # Check for existing connection
+            check_existing = cursor.execute(
+                '''SELECT * FROM user_connections WHERE sender_id = (?) AND receiver_id = (?)''',
+                (receiver_id, sender_id))
+            existing = convert_sql(check_existing)
+            if existing:
+                return make_response({
+                    "Message": "Connection already exists"
+                }, 200)
+            else:
+                # Create new row in 'user_connections' with values from 'data' and assign connection to table in variable
+                result = cursor.execute(
+                    '''INSERT INTO user_connections (sender_id, receiver_id, reason) VALUES (?, ?, ?)''',
+                    (sender_id, receiver_id, reason))
+                # import ipdb; ipdb.set_trace()
+                # Commit the new row to table
+                connection.commit()
+                # Select newly created row by id using .lastrowid method of 'result' (Research better way to return the newly created row with its id)
+                new_posts = cursor.execute(
+                    '''SELECT * FROM user_connections WHERE id = (?)''',
+                (result.lastrowid,))
+                # Pass new row to helper function
+                response = convert_sql(new_posts)
+                # Close connection
+                connection.close()
+                # Return response object and 200 status
+                return make_response(response, 200)
         # If functionality in try fails, raise error and 400 status
         except (ValueError, AttributeError, TypeError) as e:
             # Close connection
@@ -740,8 +769,8 @@ def u_connection_by_id(id):
             )
 
 
-@app.route('/api/v1/user_connections_sender/<int:id>', methods=['GET'])
-def u_connection_by_sender_id(id):
+@app.route('/api/v1/user_connections_sender/<int:sender_id>/<int:receiver_id>', methods=['GET', 'PATCH', 'DELETE'])
+def u_connection_by_sender_id(sender_id, receiver_id):
     # Create a connection to the 'user_connections' table
     connection = sqlite3.connect("instance/app.db")
     cursor = connection.cursor()
@@ -752,7 +781,7 @@ def u_connection_by_sender_id(id):
             # Grab rows from 'user_connections' table where 'id' passed matches the row's 'sender_id' and assign it to variable
             results = cursor.execute(
                 '''SELECT * FROM user_connections WHERE sender_id = (?)''',
-                (id,))
+                (sender_id,))
             # Pass 'results' to helper function and assign to variable
             response = convert_sql(results)
             # Close connection
@@ -773,10 +802,101 @@ def u_connection_by_sender_id(id):
             return make_response(
                 {"errors": [str(e)]}, 400
             )
+    # If request calls for a 'PATCH' method
+    elif request.method == 'PATCH':
+
+        try:
+            # Grab rows from 'user_connections' table by 'id' passed and assign it to variable
+            u_comms = cursor.execute(
+                '''SELECT * FROM user_connections WHERE sender_id = (?) AND receiver_id = (?)''',
+                (sender_id, receiver_id))
+            # Pass sql object to helper function assign first result to variable
+            result = convert_sql(u_comms)
+            # If row does not exist, return error and 404 status
+            if not len(result):
+                return make_response(
+                    {"error": "User Connection not found"}, 404
+                )
+            response = result[0]
+            # Convert data from request body to json object
+            data = json.loads(request.data)
+            # Iterate through 'data'
+            for attr in data:
+                # If key not 'sender_id'
+                if attr != "sender_id":
+                    # Set the value of the key to the value of corresponding key in 'data'
+                    response[attr] = data[attr]
+            # Update row with data from 'response'
+            cursor.execute(
+                '''UPDATE user_connections SET sender_id = (?), receiver_id = (?), status = (?), reason = (?) WHERE id = (?)''',
+                (response["sender_id"], response["receiver_id"], response["status"], response["reason"], id))
+            # Commit changes and close connection
+            connection.commit()
+            connection.close()
+            # Return response object and 200 status
+            return make_response(response, 200)
+        # If functionality in try fails, raise error and 400 status
+        except (ValueError, AttributeError, TypeError) as e:
+            # Close connection
+            connection.close()
+            # Remove staged changes
+            db.session.rollback()
+            return make_response(
+                {"errors": [str(e)]}, 400
+            )
+    # If request calls for a 'PATCH' method
+    elif request.method == 'DELETE':
+
+        try:
+            # Delete row where id matches 'id' passed
+            cursor.execute(
+                '''DELETE FROM user_connections WHERE sender_id = (?) AND receiver_id = (?)''',
+                (sender_id, receiver_id))
+            # Commit changes and close connection
+            connection.commit()
+            connection.close()
+            # Return response object and 200 status
+            return make_response({}, 204)
+        # If functionality in try fails, raise error and 400 status
+        except (ValueError, AttributeError, TypeError) as e:
+            connection.close()
+            db.session.rollback()
+            return make_response(
+                {"errors": [str(e)]}, 400
+            )
+
+@app.route('/api/v1/user_connections_sender/connection/<int:sender_id>/<int:receiver_id>', methods=['DELETE'])
+def u_connection_by_sender_id_connection(sender_id, receiver_id):
+    # Create a connection to the 'user_connections' table
+    connection = sqlite3.connect("instance/app.db")
+    cursor = connection.cursor()
+    # If request calls for a 'GET' method
+    if request.method == 'DELETE':
+
+        try:
+            # Delete row where id matches 'id' passed
+            cursor.execute(
+                '''DELETE FROM user_connections WHERE sender_id = (?) AND receiver_id = (?) AND status = (?)''',
+                (sender_id, receiver_id, "accepted"))
+            cursor.execute(
+                '''DELETE FROM user_connections WHERE sender_id = (?) AND receiver_id = (?) AND status = (?)''',
+                (receiver_id, sender_id, "accepted"))
+            # Commit changes and close connection
+            connection.commit()
+            connection.close()
+            # Return response object and 200 status
+            return make_response({}, 204)
+        # If functionality in try fails, raise error and 400 status
+        except (ValueError, AttributeError, TypeError) as e:
+            connection.close()
+            db.session.rollback()
+            return make_response(
+                {"errors": [str(e)]}, 400
+            )
 
 
-@app.route('/api/v1/user_connections_receiver/<int:id>', methods=['GET'])
-def u_connection_by_receiver_id(id):
+@app.route('/api/v1/user_connections_receiver/<int:receiver_id>/<int:sender_id>', methods=['GET', 'PATCH'])
+def u_connection_by_receiver_id(receiver_id, sender_id):
      # Create a connection to the 'user_connections' table
     connection = sqlite3.connect("instance/app.db")
     cursor = connection.cursor()
@@ -784,10 +904,10 @@ def u_connection_by_receiver_id(id):
     if request.method == 'GET':
 
         try:
-            # Grab rows from 'user_connections' table where 'id' passed matches the row's 'sender_id' and assign it to variable
+            # Grab rows from 'user_connections' table where 'receiver_id' passed matches the row's 'sender_id' and assign it to variable
             results = cursor.execute(
                 '''SELECT * FROM user_connections WHERE receiver_id = (?)''',
-                (id,))
+                (receiver_id,))
             # Pass 'results' to helper function and assign to variable
             response = convert_sql(results)
             # Close connection
@@ -797,6 +917,41 @@ def u_connection_by_receiver_id(id):
                 return make_response(
                     {"error": "User Connection not found"}, 404
                 )
+            # Return response object and 200 status
+            return make_response(response, 200)
+        # If functionality in try fails, raise error and 400 status
+        except (ValueError, AttributeError, TypeError) as e:
+            # Close connection
+            connection.close()
+            # Remove staged changes
+            db.session.rollback()
+            return make_response(
+                {"errors": [str(e)]}, 400
+            )
+    # If request calls for a 'PATCH' method
+    elif request.method == 'PATCH':
+
+        try:
+            # Grab rows from 'user_connections' table by 'id' passed and assign it to variable
+            u_comms = cursor.execute(
+                '''SELECT * FROM user_connections WHERE receiver_id = (?) AND sender_id = (?) AND status = (?)''',
+                (receiver_id, sender_id, "pending"))
+            # Pass sql object to helper function assign first result to variable
+            result = convert_sql(u_comms)
+            # If row does not exist, return error and 404 status
+            if not len(result):
+                return make_response(
+                    {"error": "User Connection not found"}, 404
+                )
+            response = result[0]
+            # Update row with data from 'response'
+            cursor.execute(
+                '''UPDATE user_connections SET status = (?) WHERE id = (?)''',
+                ("accepted", response["id"]))
+            # Commit changes and close connection
+            # import ipdb; ipdb.set_trace()
+            connection.commit()
+            connection.close()
             # Return response object and 200 status
             return make_response(response, 200)
         # If functionality in try fails, raise error and 400 status
@@ -876,7 +1031,6 @@ def login_with_google():
         verified_email = res['verified_email']
         if req.status_code == 200 and verified_email:
             email = res['email']
-            print(f"Google - {res}")
             user = User.query.filter_by(email=email).first()
             if user:      
                 refresh_token = create_refresh_token(identity=user.id)

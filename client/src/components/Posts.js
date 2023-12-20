@@ -4,7 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { checkToken, postRefreshToken} from "./Authorize";
 import PostContext from "./Post";
 import PostCard from "./PostCard";
-import { v4 as uuid } from 'uuid'
+import { v4 as uuid } from 'uuid';
 
 function Posts() {
 
@@ -71,7 +71,6 @@ function Posts() {
     .catch(err => toast(err))
     
     }, [])
-
   return (
     <>
       <Toaster />
