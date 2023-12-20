@@ -75,15 +75,36 @@ function Posts() {
   return (
     <>
       <Toaster />
-      <h2>Posts</h2>
-        <div>{posts.map((item, idx) => {
-          return (
-            <PostContext.Provider key={uuid()} value={item}>
-              <PostCard />
-            </PostContext.Provider>
-          )
-
+      <h2 className="headerH2">Posts</h2>
+      <div id="postsMain">
+      <div id="postsContainer" className="outerContainer">{posts.map((item, idx) => {
+          if (idx < Math.ceil(posts.length / 3)) {
+            return (
+              <PostContext.Provider key={uuid()} value={item}>
+                <PostCard />
+              </PostContext.Provider>
+            )
+          }
         })}</div>
+        <div id="postsContainer" className="innerContainer">{posts.map((item, idx) => {
+          if (idx >= Math.ceil(posts.length / 3) && idx < (posts.length - Math.ceil(posts.length / 3))) {
+            return (
+              <PostContext.Provider key={uuid()} value={item}>
+                <PostCard />
+              </PostContext.Provider>
+            )
+          }
+        })}</div>
+        <div id="postsContainer" className="outerContainer">{posts.map((item, idx) => {
+          if (idx >= (posts.length - Math.ceil(posts.length / 3))) {
+            return (
+              <PostContext.Provider key={uuid()} value={item}>
+                <PostCard />
+              </PostContext.Provider>
+            )
+          }
+        })}</div>
+      </div>
     </>
   );
 }

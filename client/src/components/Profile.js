@@ -130,6 +130,7 @@ function Profile() {
     return (
         <div>
             <Toaster />
+            <h2 className="headerH2">Profile</h2>
             <Formik
                 initialValues={{
                 user_name: '',
@@ -145,7 +146,6 @@ function Profile() {
                     <Form
                         className="loginForm"
                     >
-                        <h2>Profile</h2>
                         <div>
                             <label htmlFor="user_name">User Name</label>
                             <Field

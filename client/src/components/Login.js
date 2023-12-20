@@ -73,7 +73,8 @@ function Login () {
     };
 
     return (
-        <div>
+        <div className="loginBox">
+            <Toaster />
             <Formik
                 initialValues={{
                 password: '',

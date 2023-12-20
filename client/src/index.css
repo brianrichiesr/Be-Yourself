@@ -25,14 +25,37 @@ body {
   position: relative;
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 h1 {
   font-weight: 500;
   margin: 0;
   padding: 25px 10px;
 }
 
+hr {
+  border-color: #eee;
+  color: #eee;
+}
+
+.headerH2 {
+  padding-left: 55px;
+  color: #eee;
+}
+
+.postBoxH2 {
+  padding-left: 24px;
+}
+
 #appDiv {
-  height: 100%;
+  /* Artist @vecstock from Freepik.com */
+  background-image: url('./vibrant-colors-blend-abstract-backdrop-pattern-generated-by-ai.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 #navBar {
@@ -116,10 +139,6 @@ h1 {
   animation-fill-mode: forwards;
 }
 
-/* main {
-  padding: 0 10%;
-} */
-
 #motto {
   font-size: 40px;
   text-align: center;
@@ -140,6 +159,10 @@ h1 {
   flex-direction: row-reverse;
 }
 
+.imgBlock-3 {
+  margin-bottom: 50px;
+}
+
 .imgContainer {
   width: 45%;
   height: 400px;
@@ -152,10 +175,6 @@ h1 {
 .imgContainer-2 {
   height: 650px;
 }
-
-/* .imgContainer img {
-  border-radius: 10px;
-} */
 
 .imgText {
   width: 45%;
@@ -203,8 +222,6 @@ h1 {
   color: dodgerblue;
 }
 
-/* https://plus.unsplash.com/premium_photo-1669704099116-a325b4d6186f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aGFwcHl8ZW58MHx8MHx8fDA%3D*/
-
 .img-1 {
   background-image: url('https://images.unsplash.com/photo-1505189014261-0148f9aefa85?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODR8fHN1cHBvcnR8ZW58MHx8MHx8fDA%3D');
 }
@@ -228,16 +245,24 @@ h1 {
   background-image: url('https://plus.unsplash.com/premium_photo-1687989650568-9045b3581e66?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fGhhcHB5fGVufDB8fDB8fHww');
 }
 
+.loginBox {
+  width: 40%;
+  margin: 150px auto;
+  border-radius: 5px;
+  border: 1px solid #d4d4d5;
+  background-color: #fff;
+}
 
 .loginForm {
-  width: 50%;
-  max-width: 600px;
+  /* width: 100%; */
+  /* max-width: 600px; */
   height: 60vh;
-  padding: 150px 10px 0;
-  margin: 0 auto;
+  padding: 50px 10px 0;
+  /* margin: 0 auto; */
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  align-items: center;
 }
 
 .loginInput {
@@ -253,8 +278,9 @@ h1 {
   margin: 0;
   -webkit-tap-highlight-color: transparent;
   display: block;
-  min-width: 0;
-  width: 92%;
+  /* width: 100%; */
+  min-width: 300px;
+  max-width: 542px;
   animation-duration: 10ms;
   padding: 16.5px 14px;
 }
@@ -362,11 +388,126 @@ h1 {
   padding-left: 24px;
 }
 
-.post-card {
+#postsMain {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+
+#postsContainer {
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.innerContainer {
+  padding-top: 400px;
+}
+
+#post-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 32px;
+}
+
+.postBorder {
+  border: .5px solid #d4d4d5;
+}
+
+#postCardBox {
+  border: 1px solid #d4d4d5;
+  border-radius: 5px;
+  height: 77vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  align-self: center;
+  padding: 20px 0 10px;
+  background-color: #fff;
+}
+
+#postCardBox h2, #postCardBox h3 {
+  margin: 0;
+  font-weight: 400;
+}
+
+#postCardBox h3 {
+  padding: 25px 0 0;
+  border-top: .5px solid #2b2b2d;
+  width: 100%;
+  text-align: center;
+}
+
+#postCardBox p {
+  padding: 0 25px;
+}
+
+/* .postBox {
+  width: 45%;
+  min-width: 600px;
+} */
+
+.postBox img {
+  max-width: 400px;
+  min-width: 400px;
+  /* border-radius: 5px; */
+  max-height: 385px;
+  min-height: 385px;
+  object-fit: cover;
+  border: 1px solid #2b2b2d
+}
+
+.postBoxH2 {
+  padding-left: 25px;
+  color: #eee
+}
+
+.posts {
+  margin-bottom: 100px;
+  border-radius: 5px;
+  max-width: 400px;
+}
+
+.posts {
+  box-shadow: 0 0 0 0 #2b2b2d, 0 0 0 1px #2b2b2d;
+  transition: all .2s linear;
+}
+
+.posts:hover, .detailsCard {
+  box-shadow: 7px 7px 10px 0 #2b2b2d, 0 0 0 1px #2b2b2d;
+}
+
+.detailsCard {
+  max-width: 400px;
+}
+
+#commentForm {
+  max-height: 13vh;
+  min-height: 13vh;
+  padding-top: 15px;
+  width: 100%;
+  /* align-items: center; */
+  padding: 0 10px;
+}
+
+.commentBox {
+  width: 350px;
+  height: 78.5vh;
+  overflow: auto;
+  border-radius: 5px;
+  overflow: auto;
+  padding: 10px 25px;
+  color: #eee;
+  background-color: #000000e6;
+  font-size: 18px;
+}
+
+#commentDiv {
+  display: flex;
   justify-content: center;
-  width: 650px;
+  flex-direction: column;
 }
 
 .spacer-div {
