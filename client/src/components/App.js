@@ -62,7 +62,7 @@ function App() {
   const setUserData = (obj) => {
     setUser(obj);
   }
-
+  
   return (
     <div id="appDiv">
       <UserContext.Provider value={[setUserData, "This is how useContext works!", user]}>
@@ -70,7 +70,7 @@ function App() {
       <Toaster />
       <Outlet />
       </UserContext.Provider>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
