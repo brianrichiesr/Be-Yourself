@@ -6,9 +6,8 @@
 }
 
 html {
-  /* height: 100vh; */
     /* Artist @vecstock from Freepik.com */
-    background-image: url('./vibrant-colors-blend-abstract-backdrop-pattern-generated-by-ai.jpg');
+    background-image: url('./images/vibrant-colors-blend-abstract-backdrop-pattern-generated-by-ai.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     overflow: hidden;
@@ -56,17 +55,17 @@ hr {
   height: 100vh;
 }
 
-#landing {
-  color: #eee;
-}
-
-#navBar {
+#navBar, #footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 25px;
   height: 50px;
   position: sticky;
+}
+
+#landing {
+  color: #eee;
 }
 
 
@@ -184,11 +183,18 @@ hr {
   line-height: 2.5;
   display: flex;
   align-items: center;
-  text-align: justify;
+  text-align: center;
+  background-color: #000000b1;
+  padding: 0 25px;
+  border-radius: 10px;
 }
 
 .imgText-2 {
-  align-items: baseline;
+  flex-direction: column;
+}
+
+.imgText-2 p {
+  margin: 10px 0;
 }
 
 .imgContainer-2, .imgText-2 {
@@ -595,7 +601,34 @@ hr {
 }
 
 #footer {
-  height: 10vh;
-  margin-top: 1vh;
-  border-top: 1px solid;
+  color: #eee;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+}
+
+#author {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-image: url('./images/brian_richie.jpeg');
+  background-position: 50% 50%;
+  background-size: contain;
+}
+
+#blogDiv {
+  margin-left: 15px;
+  width: 160px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#blog {
+  text-decoration: none;
+  color: dodgerblue;
+}
+
+#blog:hover {
+  color: #eee;
 }
