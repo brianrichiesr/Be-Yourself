@@ -71,6 +71,15 @@ function Posts() {
     .catch(err => toast(err))
     
     }, [])
+  
+    if (posts.length === 0) {
+      return (
+        <div id="loading">
+          <h2 className="headerH2">Loading...</h2>
+        </div>
+      )
+    }
+
   return (
     <>
       <Toaster />

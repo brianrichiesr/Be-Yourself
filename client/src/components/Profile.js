@@ -159,7 +159,6 @@ function Profile() {
             })
             .then(data => {
                 toast("Request Accepted");
-                console.log("data", data)
                 get_user(id);
             })
             .catch(err => {
@@ -216,7 +215,10 @@ function Profile() {
     return (
         <div className="formBackgroundDiv">
             <Toaster />
+            <div id="h2Div">
             <h2 className="headerH2">Profile</h2>
+            <h2 className="headerH2 leftH2">Connections:</h2>
+            </div>
             <div id="profileContainer">
                 <div className="formBox profileBoxRight">
                     <Formik
@@ -294,16 +296,16 @@ function Profile() {
                     <div>{updateError}</div>
                 </div>
                 <div className="formBox profileBoxLeft">
-                    <h3>Connections:</h3>
                     <div id="connectionsDiv">
                         {
                             user["accepted_received"] ? user["accepted_received"].reverse().map(item => {
                                 return <p className="commentP" key={uuid()}>
                                     <span>Current: 
-                                        <span className="user_name">{item.user_name}</span> / Id: <span className="user_id">{item.id}</span> 
+                                        <span className="user_name"> {item.user_name}</span> / Id: <span className="user_id">{item.id}</span> 
                                     </span>
                                     
                                     <button
+                                        className="disconnect"
                                         onClick={() => deleteConnection(id, item.id)}>Disconnect</button>
                                 </p>
                             }) : null
@@ -312,10 +314,11 @@ function Profile() {
                             user["accepted_sent"] ? user["accepted_sent"].reverse().map(item => {
                                 return <p className="commentP" key={uuid()}>
                                     <span>Current: 
-                                        <span className="user_name">{item.user_name}</span> / Id: <span className="user_id">{item.id}</span> 
+                                        <span className="user_name"> {item.user_name}</span> / Id: <span className="user_id">{item.id}</span> 
                                     </span>
                                     
                                     <button
+                                        className="disconnect"
                                         onClick={() => deleteConnection(id, item.id)}>Disconnect</button>
                                 </p>
                             }) : null
@@ -325,14 +328,17 @@ function Profile() {
                                return item.id !== id ? (
                                      <p className="commentP" key={uuid()}>
                                     <span>From: 
-                                        <span className="user_name">{item.user_name}</span> / Id: <span className="user_id">{item.id}</span> 
+                                        <span className="user_name"> {item.user_name}</span> / Id: <span className="user_id">{item.id}</span> 
                                     </span>
                                     
-                                    <span><button
-                                        onClick={() => acceptConnection(id, item.id)}>Accept</button>
+                                    <span className="commentBtns">
+                                        <button
+                                            className="accept"
+                                            onClick={() => acceptConnection(id, item.id)}>Accept</button>
                                         
                                         <button
-                                        onClick={() => deleteConnectionRequestReceived(item.id, id)}>Refuse</button></span>
+                                            className="disconnect"
+                                            onClick={() => deleteConnectionRequestReceived(item.id, id)}>Refuse</button></span>
                                 </p>
                                 ) : null
                             }) : null
@@ -342,10 +348,11 @@ function Profile() {
                                 return item.id !== id ? (
                                     <p key={uuid()}>
                                         <span>Sent To: 
-                                            <span className="user_name">{item.user_name}</span> / Id: <span className="user_id">{item.id}</span>
+                                            <span className="user_name"> {item.user_name}</span> / Id: <span className="user_id">{item.id}</span>
                                         </span> 
                                         
                                         <button
+                                            className="disconnect"
                                             onClick={() => deleteConnectionRequestSent(id, item.id)}>Withdraw</button>
                                     </p>
                                ) : null

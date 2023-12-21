@@ -132,8 +132,88 @@ function UserDetails() {
         return <h1>You are not authorized to view this page!</h1>
     }
     return (
-        <div>
-            <h2>User: {user.user_name} / Id: {id}</h2>
+        /*
+            <div id="profileContainer">
+                <div className="formBox profileBoxRight">
+                    <Formik
+                        initialValues={{
+                        user_name: '',
+                        password: '',
+                        email: '',
+                        }}
+                        validationSchema={UpdateSchema}
+                        onSubmit={async (values) => {
+                            updateProfile(values)
+                        }}
+                    >
+                        {({errors, touched}) => (
+                            <Form
+                                className="loginForm"
+                            >
+                                <div>
+                                    <label htmlFor="user_name">User Name</label>
+                                    <Field
+                                        id="user_name"
+                                        name="user_name"
+                                        placeholder={user_name}
+                                        autoComplete="off"
+                                        className="loginInput"
+                                    />
+                                        {errors.user_name && touched.user_name ? (
+                                        <span> {errors.user_name}</span>
+                                    ) : null}
+                                </div>
+                                
+                                <div>
+                                    <label htmlFor="email">Email</label>
+                                    <Field
+                                        id="email"
+                                        name="email"
+                                        placeholder={email}
+                                        type="email"
+                                        autoComplete="off"
+                                        className="loginInput"
+                                    />
+                                    {errors.email && touched.email ? (
+                                        <span> {errors.email}</span>
+                                    ) : null}
+                                </div>
+
+                                <div>
+                                    <label htmlFor="password">Password</label>
+                                    <Field
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        placeholder="password"
+                                        autoComplete="off"
+                                        className="loginInput"
+                                    />
+                                    {errors.password && touched.password ? (
+                                        <span> {errors.password}</span>
+                                    ) : null}
+                                </div>
+                
+                                <button
+                                    type="submit"
+                                    className="submitBtn"
+                                >Update</button>
+
+
+                            </Form>
+                        )}
+                    </Formik>
+                    <button
+                        className="deleteBtn"
+                        onClick={() => deleteProfile()}
+                        >Delete</button>
+                    <div>{updateError}</div>
+                </div>
+            </div>
+        */
+        <div className="formBackgroundDiv">
+        <h2 className="headerH2">User: {user.user_name} / Id: {id}</h2>
+        <div className="formBox">
             <Formik
                 initialValues={{
                 user_name: '',
@@ -147,13 +227,19 @@ function UserDetails() {
                 }}
             >
                 {({errors, touched}) => (
-                    <Form>
+                    <Form
+                        className="loginForm"
+                    >
 
                         <div>
                             <label htmlFor="user_name">User Name</label>
-                            <Field id="user_name" name="user_name"
-                            placeholder={user_name}
-                            autoComplete="off" />
+                            <Field
+                                id="user_name"
+                                name="user_name"
+                                placeholder={user_name}
+                                autoComplete="off"
+                                className="loginInput"
+                            />
                             {errors.user_name && touched.user_name ? (
                                 <span> {errors.user_name}</span>
                             ) : null}
@@ -167,6 +253,7 @@ function UserDetails() {
                                 placeholder={email}
                                 type="email"
                                 autoComplete="off"
+                                className="loginInput"
                             />
                             {errors.email && touched.email ? (
                                 <span> {errors.email}</span>
@@ -175,7 +262,14 @@ function UserDetails() {
 
                         <div>
                             <label htmlFor="password">Password</label>
-                            <Field id="password" name="password" type="password" placeholder="password" autoComplete="off" />
+                            <Field
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="password"
+                                autoComplete="off"
+                                className="loginInput"
+                            />
                             {errors.password && touched.password ? (
                                 <span> {errors.password}</span>
                             ) : null}
@@ -195,13 +289,21 @@ function UserDetails() {
                             ) : null}
                         </div>
         
-                        <button type="submit">Update</button>
+                        <button
+                            type="submit"
+                            className="submitBtn"
+                        >Update</button>
 
                     </Form>
                 )}
             </Formik>
-            <button onClick={() => deleteProfile()}>Delete</button>
+            <button
+                className="deleteBtn"
+                onClick={() => deleteProfile()}
+                >Delete</button>
             <div>{updateError}</div>
+            <div>{updateError}</div>
+        </div>
         </div>
     )
 };
