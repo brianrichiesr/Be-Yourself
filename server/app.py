@@ -376,7 +376,10 @@ class PostByID(Resource):
                     # If the attribute is not 'id'
                     if attr != "id":
                         # Set the value of the attribute to the value of corresponding key in 'data'
-                        setattr(post, attr, data[attr])
+                        if attr == "description" and not data[attr]:
+                            pass
+                        else:
+                            setattr(post, attr, data[attr])
                 # Add new user to session and commit new user to db table
                 db.session.add(post)
                 db.session.commit()
@@ -1030,6 +1033,7 @@ def login_with_google():
         res = req.json()
         verified_email = res['verified_email']
         if req.status_code == 200 and verified_email:
+            print(f"User - {res}")
             email = res['email']
             user = User.query.filter_by(email=email).first()
             if user:      

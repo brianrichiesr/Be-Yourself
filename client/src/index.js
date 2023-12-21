@@ -24,6 +24,7 @@ import PostDetails from "./components/PostDetails";
 import Profile from "./components/Profile";
 import Users from "./components/Users";
 import UserDetails from "./components/UserDetails";
+import UpdatePost from "./components/UpdatePost";
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/posts/:id",
         element: <PostDetails />
+      }, 
+      {
+        path: "/posts/:id/update",
+        element: <UpdatePost />
       }, 
       {
         path: "/users",

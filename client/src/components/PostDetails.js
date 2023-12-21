@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { checkToken, postRefreshToken} from "./Authorize";
 import { Formik, Field, Form } from 'formik';
+import UserContext from "./User";
 import * as Yup from 'yup';
 import { v4 as uuid } from 'uuid';
 
@@ -31,6 +32,8 @@ function PostDetails() {
     const [post, setPost] = useState(postObj)
     const { id } = useParams()
     const navigate = useNavigate()
+    const userValue = useContext(UserContext);
+    const user = userValue[2];
 
     const get_post = () => {
         fetch(`/api/v1/posts/${id}`)
@@ -47,6 +50,11 @@ function PostDetails() {
             navigate('/')
         })
     }
+
+    const updatePost = () => {
+        navigate(`/posts/${id}/update`)
+    }
+
       
       useEffect(() => {
         const token = JSON.parse(localStorage.getItem('access_token'))
@@ -100,12 +108,12 @@ function PostDetails() {
             <div id="post-details">
             <Toaster />
             <div className="postBox">
-                <h2 className="postBoxH2">Post Details</h2>
+                <h2 className="postBoxH2 updatePost">Post Details {user.id === post.post_author.id ? <button id="updateBtn" onClick={updatePost}>Update</button> : null}</h2>
                 <div id="postCardBox" className="detailsCard">
-                    <h2>Honoring: {post.honoree["user_name"]} / Id: {post.honoree["id"]}</h2>
+                    <h2 className={user.id === post.honoree.id ? "myPost" : ""}>Honoring: {post.honoree["user_name"]} / Id: {post.honoree["id"]}</h2>
                     <img src={post.image} alt="post image" />
                     <p>{post.description}</p>
-                    <h3>Author: {post.post_author.user_name} / Id: {post.post_author.id}</h3>
+                    <h3 className={user.id === post.post_author.id ? "myPost" : ""}>Author: {post.post_author.user_name} / Id: {post.post_author.id}</h3>
                     <Formik
                         initialValues={{
                             comment: '',
@@ -171,6 +179,7 @@ function PostDetails() {
                     </Formik>
                 </div>
             </div>
+            
             <div className="postBox">
                 <h2 className="commentsH2">Comments:</h2>
                 <div className="commentBox">
