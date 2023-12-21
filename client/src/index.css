@@ -6,9 +6,8 @@
 }
 
 html {
-  /* height: 100vh; */
     /* Artist @vecstock from Freepik.com */
-    background-image: url('./vibrant-colors-blend-abstract-backdrop-pattern-generated-by-ai.jpg');
+    background-image: url('./images/vibrant-colors-blend-abstract-backdrop-pattern-generated-by-ai.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     overflow: hidden;
@@ -52,21 +51,42 @@ hr {
   color: #eee;
 }
 
+#usersDiv {
+  padding: 0 25px;
+  color: #eee;
+}
+
+.user-card {
+  background-color: #000000e1;
+  padding: 10px 30px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+}
+
+.leftH2 {
+  margin-right: 30.5%; 
+}
+
+#h2Div {
+  display: flex;
+  justify-content: space-between;
+}
+
 #appDiv {
   height: 100vh;
 }
 
-#landing {
-  color: #eee;
-}
-
-#navBar {
+#navBar, #footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 25px;
   height: 50px;
   position: sticky;
+}
+
+#landing {
+  color: #eee;
 }
 
 
@@ -184,11 +204,18 @@ hr {
   line-height: 2.5;
   display: flex;
   align-items: center;
-  text-align: justify;
+  text-align: center;
+  background-color: #000000b1;
+  padding: 0 25px;
+  border-radius: 10px;
 }
 
 .imgText-2 {
-  align-items: baseline;
+  flex-direction: column;
+}
+
+.imgText-2 p {
+  margin: 10px 0;
 }
 
 .imgContainer-2, .imgText-2 {
@@ -277,6 +304,7 @@ hr {
   padding-bottom: 50px;
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
 }
 
 #profileContainer {
@@ -296,14 +324,48 @@ hr {
   height: 375px;
   overflow-y: auto;
   margin-bottom: 50px;
+  padding: 0 50px
+}
+
+#connectionsDiv p {
+  display: flex;
+  justify-content: space-between;
+}
+
+#connectionsDiv p button{
+  border-radius: 3px;
+  border-style: none;
+  width: 80px;
+}
+
+.accept {
+  color: #eee;
+  background-color: #088108;
+  border-color: #088108;
+}
+
+.accept:hover {
+  color: #088108;
+  background-color: #eee;
+}
+
+.disconnect {
+  color: #eee;
+  background-color: #d21919;
+  border-color: #d21919;
+}
+
+.disconnect:hover {
+  color: #d21919;
+  background-color: #eee;
 }
 
 #receiver_id {
   padding: 5px;
 }
 
-.formBackgroundDiv {
-  height: 82vh;
+.formBackgroundDiv, #loading {
+  height: 86vh;
   overflow: hidden;
 }
 
@@ -516,7 +578,6 @@ hr {
   max-width: 400px;
   box-shadow: 0 0 0 0 #2b2b2d, 0 0 0 1px #2b2b2d;
   transition: all .2s linear;
-  /* color: #000; */
 }
 
 .posts:hover{
@@ -571,6 +632,12 @@ hr {
   flex-direction: column;
 }
 
+.commentBtns {
+  width: 165px;
+  display: flex;
+  justify-content: space-between;
+}
+
 .spacer-div {
   height: 200px;
 }
@@ -595,7 +662,34 @@ hr {
 }
 
 #footer {
-  height: 10vh;
-  margin-top: 1vh;
-  border-top: 1px solid;
+  color: #eee;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+}
+
+#author {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-image: url('./images/brian_richie.jpeg');
+  background-position: 50% 50%;
+  background-size: contain;
+}
+
+#blogDiv {
+  margin-left: 15px;
+  width: 160px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#blog {
+  text-decoration: none;
+  color: dodgerblue;
+}
+
+#blog:hover {
+  color: #eee;
 }

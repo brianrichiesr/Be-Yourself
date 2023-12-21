@@ -16,8 +16,7 @@ function UserCard({ user }) {
         <h2>Id: {user.id}</h2>
         <h3>Name: {user.user_name}</h3>
         <h3>Email: {user.email}</h3>      
-        <h3>Admin: {JSON.stringify(user.admin)}</h3>   
-        <hr />   
+        <h3>Admin: {JSON.stringify(user.admin)}</h3>     
     </div>;
 }
 

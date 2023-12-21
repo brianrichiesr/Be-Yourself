@@ -33,7 +33,7 @@ function UpdatePost() {
       });
     
     const updatePost = (values) => {
-        const confirm = prompt("Are you sure you want to delete your profile? (y)es or (n)o?")
+        const confirm = prompt("Are you sure you want to update this post? (y)es or (n)o?")
         if (confirm.toLowerCase() === "y" || confirm.toLowerCase() === "yes") {
             const obj = {};
             for (let key in values) {
@@ -90,6 +90,21 @@ function UpdatePost() {
         .catch(err => {
             toast(err)
         })
+    }
+
+    const deletePost = () => {
+        const confirm = prompt("Are you sure you want to delete this post? (y)es or (n)o?")
+        if (confirm.toLowerCase() === "y" || confirm.toLowerCase() === "yes") 
+        {
+            fetch(`/api/v1/posts/${id}`, {
+                method: 'DELETE'
+            })
+            .then(() => {
+                toast("Post Successfully Deleted");
+                navigate('/posts');
+            })
+            .catch(err => toast(err))
+        }
     }
     
     useEffect(() => {
@@ -203,6 +218,10 @@ function UpdatePost() {
                     </Form>
                 )}
             </Formik>
+            <button
+                className="deleteBtn"
+                onClick={() => deletePost()}
+            >Delete</button>
             </div>
         </div>
     )

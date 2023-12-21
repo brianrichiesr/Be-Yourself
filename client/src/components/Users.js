@@ -75,15 +75,24 @@ function Users() {
     
     }, [])
 
+    if (users.length === 0) {
+        return (
+          <div id="loading">
+            <h2 className="headerH2">Loading...</h2>
+          </div>
+        )
+      }
+
     if (!adminUser[2] || !adminUser[2].admin) {
         return <h1>You are not authorized to view this page!</h1>
     }
 
+
     return (
         <>
             <Toaster />
-            <h2>Users</h2>
-            <div>{users.map((item, idx) => {
+            <h2 className="headerH2">Users</h2>
+            <div id="usersDiv">{users.map((item, idx) => {
                 return (
                 // <UserContext.Provider>
                     <UserCard  key={uuid()} user={item} />

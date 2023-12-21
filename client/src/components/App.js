@@ -75,7 +75,7 @@ function App() {
       <Toaster />
       <Outlet />
       </UserContext.Provider>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }
